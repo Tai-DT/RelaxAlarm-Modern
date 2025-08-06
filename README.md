@@ -1,155 +1,523 @@
-# 🌙 RelaxAlarm Modern
+# RelaxAlarm Modern - Complete Documentation 🌿
 
-> A cutting-edge sleep and relaxation companion app built with modern React Native & Expo
+## 🔋 Overview
 
-[![Expo](https://img.shields.io/badge/Expo-~51.0.0-blue.svg)](https://expo.dev)
-[![React Native](https://img.shields.io/badge/React%20Native-0.74.5-green.svg)](https://reactnative.dev)
-[![TypeScript](https://img.shields.io/badge/TypeScript-~5.3.3-blue.svg)](https://typescriptlang.org)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+RelaxAlarm Modern is a **cutting-edge React Native application** built with **Expo 51** and **TypeScript 5.3**. This is a complete **redesign and modernization** of the original RelaxAlarm app, featuring a **natural, relaxation-focused theme** with **Material Design 3** principles.
 
-## ✨ Features
+## 🌱 Design Philosophy
 
-### 🎵 Core Features
-- **Smart Alarms** - Gentle wake-up with nature sounds
-- **Sleep Tracking** - Monitor your sleep patterns
-- **Relaxation Library** - Curated sounds for meditation & relaxation
-- **Premium Audiobooks** 📚 - Access thousands of sleep stories
-- **Exclusive Podcasts** 🎧 - Premium relaxation content
+### Natural Relaxation Theme
+- **Moss Green Primary** (#2D5C42) - Calming forest vibes
+- **Sage Tertiary** (#7A8471) - Natural earthiness  
+- **Lavender Secondary** (#6B7EA6) - Peaceful evening sky
+- **Warm Cream Backgrounds** (#FBF9F5) - Gentle, soothing base
 
-### 🎨 Modern Design
-- **Material Design 3** - Latest UI components
-- **Dynamic Theming** - Light/Dark mode with system sync
-- **Smooth Animations** - Lottie & Reanimated 3
-- **Responsive Layout** - Adaptive design for all screen sizes
-- **Accessibility First** - WCAG 2.1 AA compliant
+### Modern Architecture
+- **Material Design 3** color system with natural palette
+- **React Native Reanimated 3** for fluid, spring-based animations
+- **Zustand 4.5** for elegant state management
+- **TypeScript 5.3** for type safety and developer experience
+- **Expo 51** for modern tooling and native capabilities
 
-### 🚀 Technical Excellence
-- **TypeScript** - Full type safety
-- **Modern Architecture** - Clean, scalable codebase
-- **State Management** - Zustand for predictable state
-- **Offline Support** - Works without internet
-- **Performance Optimized** - 60fps smooth experience
+## 🛠️ Technical Architecture
 
-## 🏗️ Architecture
+### 📱 Core Technologies
+```
+┌───────────────────────┐
+│    React Native (Latest)   │
+│       + Expo 51           │
+│    + TypeScript 5.3       │
+└───────────────────────┘
+           │
+    ┌───────┴───────┐
+    │               │
+    v               v
+┌────────┐   ┌───────────┐
+│   UI    │   │   State   │
+│ Material │   │  Zustand  │
+│ Design 3 │   │ Persist  │
+└────────┘   └───────────┘
 
+┌──────────────────────────────┐
+│      Animations & UX        │
+│   React Native Reanimated 3 │
+│     + Spring Physics       │
+└──────────────────────────────┘
+```
+
+### 📁 Project Structure
 ```
 src/
-├── components/          # Reusable UI components
-│   ├── ui/             # Base design system components
-│   ├── forms/          # Form components
-│   └── cards/          # Card components
-├── screens/            # Screen components
-├── navigation/         # Navigation configuration
-├── services/           # API and business logic
-├── stores/             # Zustand state stores
-├── hooks/              # Custom React hooks
-├── types/              # TypeScript definitions
-├── utils/              # Helper functions
-└── constants/          # App constants
+├── components/
+│   ├── ui/              # Reusable UI components
+│   │   ├── Button.tsx
+│   │   ├── Card.tsx
+│   │   ├── Header.tsx
+│   │   └── TextField.tsx
+│   └── features/        # Feature-specific components
+│
+├── screens/             # Screen components
+│   ├── HomeScreen.tsx
+│   ├── AudiobooksScreen.tsx
+│   ├── PodcastsScreen.tsx
+│   ├── AlarmsScreen.tsx
+│   └── ProfileScreen.tsx
+│
+├── stores/              # Zustand state management
+│   ├── playerStore.ts
+│   ├── alarmStore.ts
+│   ├── userStore.ts
+│   └── themeStore.ts
+│
+├── services/            # Business logic & APIs
+│   ├── audioService.ts
+│   ├── smartAlarmService.ts
+│   └── notificationService.ts
+│
+├── navigation/          # React Navigation setup
+│   ├── AppNavigator.tsx
+│   └── TabNavigator.tsx
+│
+├── constants/           # App constants
+│   └── theme.ts          # Material Design 3 natural theme
+│
+├── types/               # TypeScript definitions
+│   └── index.ts
+│
+└── utils/               # Utility functions
+    └── index.ts
 ```
 
-## 🛠️ Tech Stack
+## 🎨 UI Component System
 
-- **Frontend**: React Native 0.74.5 + Expo 51
-- **Language**: TypeScript 5.3
-- **UI Library**: React Native Paper 5.12
-- **Navigation**: React Navigation 6
-- **State Management**: Zustand 4.5
-- **Animations**: Reanimated 3 + Lottie
-- **Audio**: Expo AV
-- **Storage**: AsyncStorage
-- **HTTP Client**: Axios + React Query
+### Material Design 3 Components
 
-## 🚀 Quick Start
+#### 🔲 Button Component
+```typescript
+<Button 
+  variant="filled"     // filled | outlined | text
+  color="primary"      // primary | secondary | tertiary
+  size="medium"        // small | medium | large
+  icon="leaf"          // Ionicons name
+  onPress={handlePress}
+>
+  Natural Action
+</Button>
+```
+
+#### 🏷️ Card Component
+```typescript
+<Card 
+  variant="elevated"    // elevated | filled | outlined
+  padding="lg"         // none | sm | md | lg
+  onPress={handlePress}
+>
+  <Text>Peaceful Content</Text>
+</Card>
+```
+
+#### 📝 Header Component
+```typescript
+<Header 
+  title="Forest Sounds 🌲"
+  subtitle="Immerse in nature"
+  rightIcon="settings-outline"
+  showBackButton
+  onRightPress={openSettings}
+/>
+```
+
+### 🌿 Natural Color Palette
+```typescript
+// Primary - Moss Green
+primary: '#2D5C42'
+onPrimary: '#FFFFFF'
+primaryContainer: '#B3F2C7'
+
+// Secondary - Lavender Sky  
+secondary: '#6B7EA6'
+onSecondary: '#FFFFFF'
+secondaryContainer: '#D4E3FF'
+
+// Tertiary - Sage Earth
+tertiary: '#7A8471'
+onTertiary: '#FFFFFF'
+tertiaryContainer: '#E2F2D9'
+
+// Background - Warm Cream
+background: '#FBF9F5'
+surface: '#FFFFFF'
+surfaceVariant: '#F0F4F0'
+```
+
+## 🎧 Audio & Media Features
+
+### Advanced Audio Player
+- **Background Playback** with media controls
+- **Smart Queue Management** with shuffle & repeat
+- **Sleep Timer** with gradual fade-out
+- **Crossfade Transitions** between tracks
+- **Offline Downloads** for premium content
+- **Adaptive Quality** based on connection
+
+### Nature Sound Categories
+```
+🌲 Forest Sounds    🌊 Ocean Waves
+😴 Sleep Stories    🧘 Meditation
+🌧️ Rain & Thunder  🔥 Fireplace Crackle
+🐦 Bird Songs      🎵 Ambient Music
+```
+
+## ⏰ Smart Alarm System
+
+### Intelligent Wake-Up
+- **Sleep Cycle Detection** for optimal wake time
+- **Gradual Volume Increase** over 10 minutes  
+- **Weather Integration** for commute adjustments
+- **Smart Snooze** with decreasing intervals
+- **Nature Sound Alarms** instead of harsh beeps
+
+### Gentle Features
+```typescript
+// Smart alarm with 30-min detection window
+const smartAlarm = {
+  time: new Date('2024-08-07T07:00:00'),
+  isSmartAlarm: true,
+  smartWindow: 30,        // minutes before alarm
+  gradualWakeUp: true,    // 10-min volume increase
+  soundUri: 'forest-birds.mp3',
+  weatherAdjustment: true // adjust for weather
+};
+```
+
+## 📊 Wellness Tracking
+
+### Personal Insights
+- **Sleep Quality Score** (1-10 rating)
+- **Daily Relaxation Streak** tracking
+- **Meditation Minutes** accumulated  
+- **Favorite Content** recommendations
+- **Weekly Progress** reports with trends
+
+### Stats Dashboard
+```
+😴 Sleep Sessions: 127 nights    (+12%)
+⏱️ Meditation Time: 45.2 hours    (+8%) 
+❤️ Relaxation Score: 8.7/10       (+0.5)
+🔥 Daily Streak: 23 days         (active)
+```
+
+## 📦 State Management
+
+### Zustand Stores
+
+#### Player Store
+```typescript
+const { 
+  currentContent,
+  isPlaying,
+  queue,
+  playContent,
+  pauseContent,
+  playNext,
+  setSleepTimer 
+} = usePlayerStore();
+```
+
+#### Alarm Store  
+```typescript
+const {
+  alarms,
+  addAlarm,
+  toggleAlarm,
+  getNextAlarm,
+  snoozeAlarm
+} = useAlarmStore();
+```
+
+#### Settings Store
+```typescript
+const {
+  audioQuality,
+  sleepTimerDefault,
+  bedtimeReminders,
+  updateSetting
+} = useSettingsStore();
+```
+
+## 🔔 Smart Notifications
+
+### Gentle Reminders
+- **Bedtime Notifications** with natural language
+- **Meditation Reminders** at optimal times
+- **Weekly Wellness Reports** with insights
+- **Smart Do Not Disturb** during sleep hours
+
+### Notification Examples
+```
+🌙 "Time to wind down with forest sounds"
+🧘 "Your 10-minute mindfulness break awaits"
+📊 "This week: 5 hours of peaceful listening!"
+🌅 "Gentle wake-up in 30 minutes - sweet dreams"
+```
+
+## 🔒 Privacy & Security
+
+### Data Protection
+- **Local Storage First** - most data stays on device
+- **Encrypted Sync** for cloud backup (optional)
+- **Anonymous Analytics** with opt-out
+- **No Personal Audio Tracking** - content preferences only
+
+### User Control
+```typescript
+// Privacy settings
+const privacySettings = {
+  analytics: false,           // Disable usage tracking
+  crashReports: true,         // Help improve app
+  personalizedAds: false,     // No targeted advertising
+  dataSaver: true,           // Minimize data usage
+  cloudSync: false           // Keep data local only
+};
+```
+
+## 📱 Platform Features
+
+### iOS Integration
+- **CarPlay Support** for in-car listening
+- **Siri Shortcuts** for voice control
+- **Apple Health** sleep data sync
+- **Dynamic Island** playback controls
+- **Focus Modes** integration
+
+### Android Integration  
+- **Android Auto** compatibility
+- **Google Assistant** voice commands
+- **Adaptive Brightness** for night mode
+- **Quick Settings** tile for sleep mode
+- **Notification Channels** for fine control
+
+## 🚀 Performance Optimizations
+
+### App Performance
+- **Lazy Loading** for screen components
+- **Image Caching** with expo-image
+- **Audio Preloading** for instant playback
+- **Background Task Management** for downloads
+- **Memory Optimization** for large audio files
+
+### Bundle Optimization
+```javascript
+// Metro config for optimized bundling
+module.exports = {
+  transformer: {
+    minifierConfig: {
+      keep_fnames: true,
+      mangle: { keep_fnames: true }
+    }
+  },
+  resolver: {
+    alias: {
+      '@': './src'
+    }
+  }
+};
+```
+
+## 💰 Premium Features
+
+### 🌿 Nature Premium
+- **Unlimited Downloads** for offline listening
+- **Exclusive Nature Recordings** from around the world
+- **Advanced Sleep Analytics** with detailed insights  
+- **Smart Home Integration** (Philips Hue, etc.)
+- **Priority Customer Support** from wellness experts
+
+### Content Library
+```
+🌲 500+ Forest Recordings   🌊 300+ Ocean Soundscapes
+😴 200+ Sleep Stories       🧘 150+ Guided Meditations
+🌧️ 100+ Rain Variations    🔥 50+ Fireplace Ambients
+```
+
+## 🛠️ Installation & Setup
 
 ### Prerequisites
-- Node.js 18+
-- Expo CLI
-- iOS Simulator / Android Emulator
-
-### Installation
-
 ```bash
-# Clone the repository
+Node.js 18+
+Expo CLI (latest)
+iOS Simulator / Android Emulator
+Yarn or npm
+```
+
+### Quick Start
+```bash
+# Clone repository
 git clone https://github.com/Tai-DT/RelaxAlarm-Modern.git
 cd RelaxAlarm-Modern
 
 # Install dependencies
-npm install
+yarn install
 
-# Start the development server
-npx expo start
-```
+# Start development
+expо start
 
-### Development
-
-```bash
 # Run on iOS
-npx expo start --ios
+yarn ios
 
-# Run on Android
-npx expo start --android
-
-# Run on Web
-npx expo start --web
-
-# Type checking
-npm run type-check
-
-# Linting
-npm run lint
+# Run on Android  
+yarn android
 ```
 
-### Building
-
+### Environment Setup
 ```bash
-# Build for Android
-npm run build:android
-
-# Build for iOS
-npm run build:ios
+# .env.local
+EXPO_PUBLIC_API_URL=https://api.relaxalarm.com
+EXPO_PUBLIC_ANALYTICS_KEY=your_analytics_key
+EXPO_PUBLIC_ENVIRONMENT=development
 ```
 
-## 📱 Screenshots
+## 📚 API Documentation
 
-| Home Screen | Audiobooks | Sleep Tracking | Premium |
-|-------------|------------|----------------|---------|
-| ![Home](./docs/screenshots/home.png) | ![Audiobooks](./docs/screenshots/audiobooks.png) | ![Sleep](./docs/screenshots/sleep.png) | ![Premium](./docs/screenshots/premium.png) |
+### Audio Content API
+```typescript
+// Fetch nature sounds
+GET /api/content
+?category=nature
+&language=en
+&premium=true
+&limit=20
 
-## 🎨 Design System
+// Download content
+POST /api/content/:id/download
+{
+  "quality": "high",
+  "device_id": "uuid"
+}
+```
 
-Our design system follows Material Design 3 principles with custom adaptations:
+### User Analytics API
+```typescript
+// Track listening session
+POST /api/analytics/session
+{
+  "content_id": "forest-rain-001",
+  "duration": 1800,
+  "completed": true,
+  "sleep_timer": 3600
+}
+```
 
-- **Colors**: Moss green primary palette with water drop accents
-- **Typography**: Inter font family with 6 size scales
-- **Spacing**: 8px base unit with consistent rhythm
-- **Components**: 40+ reusable components
-- **Animations**: Micro-interactions with 300ms easing
+## 🐞 Testing Strategy
 
-## 🏆 Features Roadmap
+### Test Coverage
+- **Unit Tests** for utilities and stores (Jest)
+- **Component Tests** with React Native Testing Library
+- **Integration Tests** for navigation flows
+- **E2E Tests** with Detox for critical user journeys
+- **Performance Tests** for audio playback
 
-- [ ] **AI Sleep Coach** - Personalized sleep recommendations
-- [ ] **Social Features** - Share sleep goals with friends
-- [ ] **Wearable Integration** - Apple Watch & Wear OS support
-- [ ] **Multi-language** - Localization for 10+ languages
-- [ ] **Cloud Sync** - Cross-device synchronization
+### Test Examples
+```typescript
+// Audio service test
+describe('AudioService', () => {
+  it('should play nature sound with correct quality', async () => {
+    const content = { id: '1', url: 'forest.mp3', quality: 'high' };
+    await audioService.play(content);
+    
+    expect(audioService.isPlaying()).toBe(true);
+    expect(audioService.getCurrentQuality()).toBe('high');
+  });
+});
+```
+
+## 📈 Analytics & Insights
+
+### Usage Metrics
+- **Daily Active Users** with retention cohorts
+- **Session Duration** and completion rates
+- **Content Popularity** rankings
+- **Feature Adoption** tracking
+- **Sleep Quality Correlation** analysis
+
+### Wellness Insights
+```typescript
+// Generate personalized insights
+const insights = {
+  sleepTrend: "improving",     // based on 30-day average
+  optimalBedtime: "22:30",     // ML-suggested time  
+  favoriteCategory: "forest",  // most-played content
+  streakMotivation: "7-day milestone reached!"
+};
+```
+
+## 🚪 Accessibility
+
+### Inclusive Design
+- **VoiceOver/TalkBack** full support
+- **High Contrast** mode for visual impairments
+- **Large Text** scaling up to 200%
+- **Reduced Motion** for vestibular sensitivities
+- **Voice Control** for hands-free operation
+
+### WCAG 2.1 Compliance
+```typescript
+// Accessibility props example
+<Button
+  accessibilityLabel="Play forest sounds for 30 minutes"
+  accessibilityHint="Tap to start peaceful forest audio"
+  accessibilityRole="button"
+  accessibilityState={{ disabled: isLoading }}
+>
+  Play Forest 🌲
+</Button>
+```
+
+## 🕰️ Future Roadmap
+
+### Version 2.0 (Q4 2024)
+- [ ] **AI-Powered Sleep Coaching** with personalized advice
+- [ ] **Social Features** - share favorite sounds with friends
+- [ ] **Smart Home Integration** - control lights, temperature
+- [ ] **Apple Watch App** with sleep tracking
+- [ ] **Offline AI** for content recommendations
+
+### Version 2.5 (Q1 2025)
+- [ ] **Virtual Reality** support for immersive nature
+- [ ] **Biometric Integration** - heart rate, breathing
+- [ ] **Family Sharing** with child-safe content
+- [ ] **Professional Wellness** for therapists/coaches
 
 ## 🤝 Contributing
 
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+### Development Guidelines
+- **TypeScript** strict mode required
+- **ESLint + Prettier** for code formatting
+- **Conventional Commits** for clear history
+- **Component Documentation** with Storybook
+- **Accessibility Testing** for all new features
 
-## 📄 License
+### Pull Request Process
+1. Fork repository and create feature branch
+2. Write tests for new functionality  
+3. Ensure accessibility compliance
+4. Update documentation if needed
+5. Submit PR with clear description
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+## 📝 License
 
-## 🌟 Show your support
+MIT License - see [LICENSE](LICENSE) file for details.
 
-Give a ⭐️ if this project helped you!
+## 🙏 Acknowledgments
+
+- **Material Design 3** for the design system foundation
+- **React Native Community** for excellent libraries
+- **Nature Sounds** recorded by environmental audio artists
+- **Sleep Research** from leading wellness institutions
+- **Accessibility Guidelines** from W3C and platform teams
 
 ---
 
-**Built with ❤️ by [Tai-DT](https://github.com/Tai-DT)**
+**Built with ❤️ for peaceful sleep and natural wellness**
+
+*RelaxAlarm Modern - Where technology meets tranquility* 🌿🌙
