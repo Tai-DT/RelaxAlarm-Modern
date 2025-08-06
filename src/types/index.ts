@@ -1,341 +1,561 @@
 /**
- * TypeScript Type Definitions for RelaxAlarm Modern
+ * Complete Type Definitions for RelaxAlarm Modern
  */
 
-// User & Authentication Types
-export interface User {
-  id: string;
-  email: string;
-  name: string;
-  avatar?: string;
-  isPremium: boolean;
-  premiumExpiresAt?: Date;
-  preferences: UserPreferences;
-  createdAt: Date;
-  updatedAt: Date;
-}
+import { NavigatorScreenParams } from '@react-navigation/native';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
 
-export interface UserPreferences {
-  theme: 'light' | 'dark' | 'system';
-  notificationsEnabled: boolean;
-  soundEnabled: boolean;
-  sleepGoal: number; // hours
-  wakeUpTime: string; // HH:mm format
-  bedTime: string; // HH:mm format
-  language: string;
-}
-
-export interface AuthState {
-  user: User | null;
-  isAuthenticated: boolean;
-  isLoading: boolean;
-  error: string | null;
-}
-
-// Subscription Types
-export interface SubscriptionPlan {
-  id: string;
-  name: string;
-  description: string;
-  price: number;
-  currency: string;
-  duration: number; // days
-  features: string[];
-  popular?: boolean;
-  trial?: boolean;
-}
-
-export interface SubscriptionState {
-  plans: SubscriptionPlan[];
-  currentPlan: SubscriptionPlan | null;
-  isLoading: boolean;
-  error: string | null;
-}
-
-// Content Types
-export interface AudioContent {
-  id: string;
-  title: string;
-  description: string;
-  author: string;
-  duration: number; // seconds
-  url: string;
-  thumbnailUrl: string;
-  category: ContentCategory;
-  tags: string[];
-  isPremium: boolean;
-  isDownloaded: boolean;
-  downloadUrl?: string;
-  playCount: number;
-  rating: number;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-export interface Audiobook extends AudioContent {
-  type: 'audiobook';
-  chapters: Chapter[];
-  narrator: string;
-  language: string;
-  genre: string;
-}
-
-export interface Podcast extends AudioContent {
-  type: 'podcast';
-  episodes: Episode[];
-  publisher: string;
-  rssUrl?: string;
-  website?: string;
-}
-
-export interface Chapter {
-  id: string;
-  title: string;
-  startTime: number;
-  endTime: number;
-  duration: number;
-}
-
-export interface Episode {
-  id: string;
-  title: string;
-  description: string;
-  url: string;
-  duration: number;
-  publishedAt: Date;
-  seasonNumber?: number;
-  episodeNumber?: number;
-}
-
-export type ContentCategory = 
-  | 'sleep-stories'
-  | 'meditation'
-  | 'nature-sounds'
-  | 'music'
-  | 'podcasts'
-  | 'audiobooks'
-  | 'white-noise'
-  | 'guided-sleep'
-  | 'relaxation';
-
-// Player Types
-export interface PlayerState {
-  currentContent: AudioContent | null;
-  isPlaying: boolean;
-  isLoading: boolean;
-  position: number;
-  duration: number;
-  playbackRate: number;
-  volume: number;
-  repeatMode: 'off' | 'one' | 'all';
-  shuffleEnabled: boolean;
-  playlist: AudioContent[];
-  currentIndex: number;
-}
-
-export interface PlaybackHistory {
-  id: string;
-  contentId: string;
-  userId: string;
-  position: number;
-  duration: number;
-  completedAt?: Date;
-  playedAt: Date;
-}
-
-// Sleep Tracking Types
-export interface SleepSession {
-  id: string;
-  userId: string;
-  startTime: Date;
-  endTime: Date;
-  duration: number; // minutes
-  quality: 1 | 2 | 3 | 4 | 5;
-  notes?: string;
-  createdAt: Date;
-}
-
-export interface SleepStats {
-  averageDuration: number;
-  averageQuality: number;
-  totalSessions: number;
-  streak: number;
-  weeklyData: SleepWeekData[];
-  monthlyData: SleepMonthData[];
-}
-
-export interface SleepWeekData {
-  week: string; // YYYY-WW format
-  averageDuration: number;
-  averageQuality: number;
-  sessions: number;
-}
-
-export interface SleepMonthData {
-  month: string; // YYYY-MM format
-  averageDuration: number;
-  averageQuality: number;
-  sessions: number;
-}
-
-// Alarm Types
-export interface Alarm {
-  id: string;
-  userId: string;
-  time: string; // HH:mm format
-  label: string;
-  isEnabled: boolean;
-  repeatDays: boolean[]; // [Sun, Mon, Tue, Wed, Thu, Fri, Sat]
-  soundId: string;
-  vibrationEnabled: boolean;
-  snoozeEnabled: boolean;
-  snoozeDuration: number; // minutes
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-export interface AlarmSound {
-  id: string;
-  name: string;
-  url: string;
-  category: 'gentle' | 'nature' | 'music' | 'traditional';
-  duration: number;
-  isPremium: boolean;
-}
-
+// =============================================================================
 // Navigation Types
+// =============================================================================
+
 export type RootStackParamList = {
-  MainTabs: undefined;
+  // Auth Stack
   Login: undefined;
   Register: undefined;
-  Subscription: { planId?: string };
-  AudiobookPlayer: { audiobook: Audiobook };
-  PodcastPlayer: { podcast: Podcast; episode?: Episode };
+  ForgotPassword: undefined;
+  
+  // Main App
+  MainTabs: NavigatorScreenParams<MainTabParamList>;
+  
+  // Modal Screens
+  PodcastPlayer: { podcast: Podcast };
+  AudioPlayer: { content: AudioContent };
   AlarmSettings: { alarmId?: string };
-  UserProfile: undefined;
   Settings: undefined;
+  Profile: undefined;
+  Premium: undefined;
+  
+  // Content Screens
+  PodcastDetails: { podcastId: string };
+  PlaylistDetails: { playlistId: string };
+  CategoryBrowser: { category: string };
 };
 
 export type MainTabParamList = {
   Home: undefined;
   Audiobooks: undefined;
   Podcasts: undefined;
-  Sleep: undefined;
   Alarms: undefined;
   Profile: undefined;
 };
 
-// API Response Types
+// =============================================================================
+// User & Authentication Types
+// =============================================================================
+
+export interface User {
+  id: string;
+  email: string;
+  name: string;
+  profilePicture?: string;
+  isPremium: boolean;
+  preferences: UserPreferences;
+  stats: UserStats;
+  createdAt: Date;
+  lastLoginAt: Date;
+}
+
+export interface UserPreferences {
+  favoriteGenres: string[];
+  sleepGoal: number; // hours
+  wakeUpTime: string;
+  bedTime: string;
+  enableSmartAlarms: boolean;
+  preferredNarrators: string[];
+  autoDownload: boolean;
+  dataUsageLimit: number; // MB
+}
+
+export interface UserStats {
+  totalListeningTime: number; // minutes
+  sleepSessions: number;
+  meditationSessions: number;
+  currentStreak: number; // days
+  longestStreak: number; // days
+  favoriteContent: AudioContent[];
+  weeklyProgress: WeeklyProgress[];
+}
+
+export interface WeeklyProgress {
+  week: string; // ISO week
+  listeningTime: number;
+  sleepQuality: number; // 1-10
+  sessions: number;
+}
+
+// =============================================================================
+// Audio Content Types
+// =============================================================================
+
+export interface AudioContent {
+  id: string;
+  title: string;
+  author: string;
+  description: string;
+  duration: number; // seconds
+  url: string;
+  coverImage: string;
+  category: ContentCategory;
+  tags: string[];
+  
+  // Metadata
+  rating: number;
+  reviewCount: number;
+  releaseDate: string;
+  language: string;
+  isSubscriptionRequired: boolean;
+  downloadSize?: number; // bytes
+  
+  // Progress tracking
+  isCompleted: boolean;
+  currentPosition?: number; // seconds
+  lastPlayedAt?: Date;
+  
+  // Related content
+  relatedContent?: string[]; // content IDs
+  nextInSeries?: string; // content ID
+  
+  // AI/LLM specific (for podcasts)
+  transcript?: string;
+  chapters?: Chapter[];
+}
+
+export interface Podcast extends AudioContent {
+  episodeCount: number;
+  episodes: Episode[];
+  subscriptionInfo?: SubscriptionInfo;
+  updateFrequency: 'daily' | 'weekly' | 'monthly';
+}
+
+export interface Episode {
+  id: string;
+  title: string;
+  description: string;
+  duration: number;
+  url: string;
+  publishDate: string;
+  episodeNumber: number;
+  seasonNumber?: number;
+}
+
+export interface Chapter {
+  id: string;
+  title: string;
+  startTime: number; // seconds
+  endTime: number; // seconds
+  description?: string;
+}
+
+export interface SubscriptionInfo {
+  cost: number;
+  currency: string;
+  period: 'monthly' | 'yearly';
+  features: string[];
+}
+
+export type ContentCategory = 
+  | 'sleep'
+  | 'meditation'
+  | 'nature'
+  | 'stories'
+  | 'music'
+  | 'mindfulness'
+  | 'healing'
+  | 'focus'
+  | 'anxiety'
+  | 'children';
+
+// =============================================================================
+// Alarm Types
+// =============================================================================
+
+export interface Alarm {
+  id: string;
+  label: string;
+  time: Date;
+  isActive: boolean;
+  repeatDays?: number[]; // 0-6, Sunday = 0
+  
+  // Sound settings
+  soundUri?: string;
+  volume: number;
+  vibrate: boolean;
+  
+  // Smart features
+  isSmartAlarm: boolean;
+  smartWindow: number; // minutes before alarm time
+  gradualWakeUp: boolean;
+  
+  // Snooze settings
+  snoozeEnabled: boolean;
+  snoozeDuration: number; // minutes
+  maxSnoozes: number;
+  
+  // Weather integration
+  weatherAdjustment: boolean;
+  
+  // Metadata
+  createdAt: Date;
+  lastTriggered?: Date;
+  timesTriggered: number;
+}
+
+export interface SleepCycle {
+  sleepTime: Date;
+  wakeTime: Date;
+  stages: SleepStage[];
+  quality: number; // 1-10
+  efficiency: number; // percentage
+}
+
+export interface SleepStage {
+  stage: 'light' | 'deep' | 'rem' | 'awake';
+  startTime: Date;
+  duration: number; // minutes
+}
+
+// =============================================================================
+// Playback Types
+// =============================================================================
+
+export type PlaybackState = 
+  | 'loading'
+  | 'playing'
+  | 'paused'
+  | 'stopped'
+  | 'buffering'
+  | 'error';
+
+export type RepeatMode = 'off' | 'one' | 'all';
+
+export interface PlaybackSession {
+  id: string;
+  contentId: string;
+  startTime: Date;
+  endTime?: Date;
+  duration: number; // seconds actually played
+  completed: boolean;
+  deviceInfo: DeviceInfo;
+}
+
+export interface DeviceInfo {
+  platform: 'ios' | 'android';
+  version: string;
+  model: string;
+  isTablet: boolean;
+}
+
+// =============================================================================
+// Playlist Types
+// =============================================================================
+
+export interface Playlist {
+  id: string;
+  name: string;
+  description?: string;
+  coverImage?: string;
+  isPublic: boolean;
+  createdBy: string; // user ID
+  contentIds: string[];
+  tags: string[];
+  
+  // Metadata
+  createdAt: Date;
+  updatedAt: Date;
+  totalDuration: number; // seconds
+  playCount: number;
+  likeCount: number;
+}
+
+// =============================================================================
+// Download & Offline Types
+// =============================================================================
+
+export interface DownloadItem {
+  contentId: string;
+  status: DownloadStatus;
+  progress: number; // 0-100
+  filePath?: string;
+  size: number; // bytes
+  downloadedAt?: Date;
+  expiresAt?: Date;
+}
+
+export type DownloadStatus = 
+  | 'pending'
+  | 'downloading'
+  | 'completed'
+  | 'failed'
+  | 'paused';
+
+// =============================================================================
+// Analytics & Tracking Types
+// =============================================================================
+
+export interface AnalyticsEvent {
+  id: string;
+  type: EventType;
+  properties: Record<string, any>;
+  timestamp: Date;
+  userId?: string;
+  sessionId: string;
+}
+
+export type EventType = 
+  | 'content_play'
+  | 'content_pause'
+  | 'content_complete'
+  | 'alarm_trigger'
+  | 'alarm_snooze'
+  | 'download_start'
+  | 'download_complete'
+  | 'premium_upgrade'
+  | 'settings_change'
+  | 'sleep_session_start'
+  | 'sleep_session_end';
+
+// =============================================================================
+// Notification Types
+// =============================================================================
+
+export interface NotificationSettings {
+  enabled: boolean;
+  types: NotificationType[];
+  quietHours: QuietHours;
+  frequency: NotificationFrequency;
+}
+
+export type NotificationType = 
+  | 'alarm'
+  | 'reminder'
+  | 'content_recommendation'
+  | 'sleep_tip'
+  | 'milestone'
+  | 'social';
+
+export interface QuietHours {
+  enabled: boolean;
+  startTime: string; // HH:mm
+  endTime: string; // HH:mm
+}
+
+export type NotificationFrequency = 'immediate' | 'hourly' | 'daily' | 'weekly';
+
+// =============================================================================
+// Theme & UI Types
+// =============================================================================
+
+export interface ThemeColors {
+  // Primary colors
+  primary: string;
+  onPrimary: string;
+  primaryContainer: string;
+  onPrimaryContainer: string;
+  
+  // Secondary colors
+  secondary: string;
+  onSecondary: string;
+  secondaryContainer: string;
+  onSecondaryContainer: string;
+  
+  // Tertiary colors
+  tertiary: string;
+  onTertiary: string;
+  tertiaryContainer: string;
+  onTertiaryContainer: string;
+  
+  // Error colors
+  error: string;
+  onError: string;
+  errorContainer: string;
+  onErrorContainer: string;
+  
+  // Surface colors
+  surface: string;
+  onSurface: string;
+  surfaceVariant: string;
+  onSurfaceVariant: string;
+  surfaceContainer: string;
+  surfaceContainerHigh: string;
+  surfaceContainerHighest: string;
+  
+  // Background
+  background: string;
+  onBackground: string;
+  
+  // Outline
+  outline: string;
+  outlineVariant: string;
+  
+  // Other
+  shadow: string;
+  scrim: string;
+  inverseSurface: string;
+  inverseOnSurface: string;
+  inversePrimary: string;
+}
+
+export interface AppTheme {
+  colors: ThemeColors;
+  typography: Typography;
+  spacing: Spacing;
+  borderRadius: BorderRadius;
+  elevation: Elevation;
+}
+
+export interface Typography {
+  displayLarge: TextStyle;
+  displayMedium: TextStyle;
+  displaySmall: TextStyle;
+  headlineLarge: TextStyle;
+  headlineMedium: TextStyle;
+  headlineSmall: TextStyle;
+  titleLarge: TextStyle;
+  titleMedium: TextStyle;
+  titleSmall: TextStyle;
+  bodyLarge: TextStyle;
+  bodyMedium: TextStyle;
+  bodySmall: TextStyle;
+  labelLarge: TextStyle;
+  labelMedium: TextStyle;
+  labelSmall: TextStyle;
+}
+
+export interface TextStyle {
+  fontSize: number;
+  fontWeight: string;
+  lineHeight: number;
+  letterSpacing?: number;
+}
+
+export interface Spacing {
+  xs: number;
+  sm: number;
+  md: number;
+  lg: number;
+  xl: number;
+  xxl: number;
+}
+
+export interface BorderRadius {
+  sm: number;
+  md: number;
+  lg: number;
+  xl: number;
+  full: number;
+}
+
+export interface Elevation {
+  none: number;
+  sm: number;
+  md: number;
+  lg: number;
+  xl: number;
+}
+
+// =============================================================================
+// API & Network Types
+// =============================================================================
+
 export interface ApiResponse<T> {
+  data: T;
   success: boolean;
-  data?: T;
   message?: string;
   error?: string;
+  pagination?: PaginationInfo;
 }
 
-export interface PaginatedResponse<T> {
-  data: T[];
-  pagination: {
-    page: number;
-    limit: number;
-    total: number;
-    pages: number;
-  };
+export interface PaginationInfo {
+  page: number;
+  limit: number;
+  total: number;
+  hasNext: boolean;
+  hasPrev: boolean;
 }
 
-// Store Types
-export interface AppState {
-  auth: AuthState;
-  subscription: SubscriptionState;
-  player: PlayerState;
-  theme: 'light' | 'dark' | 'system';
-  isOnline: boolean;
+export interface ApiError {
+  code: string;
+  message: string;
+  details?: Record<string, any>;
 }
 
+// =============================================================================
+// Utility Types
+// =============================================================================
+
+export type Optional<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
+export type Required<T, K extends keyof T> = T & { [P in K]-?: T[P] };
+
+// =============================================================================
 // Component Props Types
-export interface BaseComponentProps {
-  testID?: string;
+// =============================================================================
+
+export interface ButtonProps {
+  variant?: 'filled' | 'outlined' | 'text';
+  size?: 'small' | 'medium' | 'large';
+  color?: 'primary' | 'secondary' | 'tertiary' | 'error';
+  disabled?: boolean;
+  loading?: boolean;
+  icon?: string;
+  iconPosition?: 'left' | 'right';
+  onPress?: () => void;
   style?: any;
   children?: React.ReactNode;
 }
 
-export interface ButtonProps extends BaseComponentProps {
-  onPress: () => void;
-  disabled?: boolean;
-  loading?: boolean;
-  variant?: 'filled' | 'outlined' | 'text';
-  size?: 'small' | 'medium' | 'large';
-  color?: 'primary' | 'secondary' | 'error';
-  icon?: string;
-  iconPosition?: 'left' | 'right';
-  fullWidth?: boolean;
-}
-
-export interface CardProps extends BaseComponentProps {
+export interface CardProps {
   variant?: 'elevated' | 'filled' | 'outlined';
-  padding?: keyof typeof import('../constants/theme').spacing;
-  margin?: keyof typeof import('../constants/theme').spacing;
+  padding?: 'none' | 'sm' | 'md' | 'lg';
   onPress?: () => void;
-  disabled?: boolean;
+  style?: any;
+  children?: React.ReactNode;
 }
 
-// Error Types
-export class AppError extends Error {
-  code: string;
-  statusCode?: number;
+export interface HeaderProps {
+  title: string;
+  subtitle?: string;
+  showBackButton?: boolean;
+  rightIcon?: string;
+  leftIcon?: string;
+  onBackPress?: () => void;
+  onRightPress?: () => void;
+  onLeftPress?: () => void;
+  style?: any;
+}
+
+// =============================================================================
+// State Management Types
+// =============================================================================
+
+export interface AppState {
+  user: User | null;
+  isAuthenticated: boolean;
+  theme: 'light' | 'dark' | 'auto';
+  currentContent: AudioContent | null;
+  playbackState: PlaybackState;
+  downloads: DownloadItem[];
+  alarms: Alarm[];
+  playlists: Playlist[];
+  settings: AppSettings;
+}
+
+export interface AppSettings {
+  // Audio settings
+  audioQuality: 'low' | 'medium' | 'high' | 'lossless';
+  autoPlay: boolean;
+  downloadOverWifiOnly: boolean;
   
-  constructor(message: string, code: string, statusCode?: number) {
-    super(message);
-    this.name = 'AppError';
-    this.code = code;
-    this.statusCode = statusCode;
-  }
-}
-
-export interface ErrorInfo {
-  message: string;
-  code: string;
-  stack?: string;
-  timestamp: Date;
-}
-
-// Utility Types
-export type DeepPartial<T> = {
-  [P in keyof T]?: T[P] extends object ? DeepPartial<T[P]> : T[P];
-};
-
-export type Optional<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
-
-export type RequiredField<T, K extends keyof T> = T & Required<Pick<T, K>>;
-
-// Form Types
-export interface FormField {
-  value: string;
-  error?: string;
-  touched: boolean;
-}
-
-export interface LoginForm {
-  email: FormField;
-  password: FormField;
-}
-
-export interface RegisterForm {
-  name: FormField;
-  email: FormField;
-  password: FormField;
-  confirmPassword: FormField;
-  acceptTerms: boolean;
-}
-
-export interface ValidationRule {
-  required?: boolean;
-  minLength?: number;
-  maxLength?: number;
-  pattern?: RegExp;
-  custom?: (value: string) => string | undefined;
-}
-
-export interface FormValidation {
-  [key: string]: ValidationRule;
+  // Privacy settings
+  analyticsEnabled: boolean;
+  crashReportingEnabled: boolean;
+  
+  // Accessibility
+  fontSize: 'small' | 'medium' | 'large';
+  highContrast: boolean;
+  reduceMotion: boolean;
+  
+  // Notifications
+  notifications: NotificationSettings;
 }
