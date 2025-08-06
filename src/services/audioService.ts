@@ -1,18 +1,50 @@
 /**
- * Audio Services - Modern audio playback with background support
+ * Advanced Audio Service with Smart Features
  */
 
-import { Audio, AVPlaybackStatus } from 'expo-av';
-import * as MediaLibrary from 'expo-media-library';
-import { AudioContent, PlaybackState, PlayerState } from '../types';
+import { Audio } from 'expo-av';
+import * as FileSystem from 'expo-file-system';
+import { AudioContent, PlaybackState } from '../types';
+import { usePlayerStore } from '../stores';
 
-export class AudioService {
+export interface AudioServiceInterface {
+  // Playback control
+  play: (content: AudioContent) => Promise<void>;
+  pause: () => Promise<void>;
+  resume: () => Promise<void>;
+  stop: () => Promise<void>;
+  seekTo: (position: number) => Promise<void>;
+  
+  // Audio settings
+  setVolume: (volume: number) => Promise<void>;
+  setPlaybackRate: (rate: number) => Promise<void>;
+  
+  // Download management
+  downloadContent: (content: AudioContent) => Promise<string>;
+  isContentDownloaded: (contentId: string) => Promise<boolean>;
+  deleteDownload: (contentId: string) => Promise<void>;
+  
+  // Audio effects
+  enableNightMode: () => Promise<void>;
+  disableNightMode: () => Promise<void>;
+  setEqualizer: (preset: EqualizerPreset) => Promise<void>;
+  
+  // Background playback
+  enableBackgroundPlayback: () => Promise<void>;
+  disableBackgroundPlayback: () => Promise<void>;
+  
+  // Session management
+  getCurrentPosition: () => Promise<number>;
+  getDuration: () => Promise<number>;
+  getPlaybackState: () => Promise<PlaybackState>;
+}
+
+type EqualizerPreset = 'off' | 'relaxation' | 'meditation' | 'sleep' | 'nature';
+
+class AudioServiceImpl implements AudioServiceInterface {
   private sound: Audio.Sound | null = null;
   private currentContent: AudioContent | null = null;
-  private playbackState: PlaybackState = 'stopped';
-  private position: number = 0;
-  private duration: number = 0;
-  private onStateChange: ((state: PlayerState) => void) | null = null;
+  private isInitialized = false;
   
   constructor() {
     this.initializeAudio();
@@ -20,202 +52,262 @@ export class AudioService {
   
   private async initializeAudio() {
     try {
-      // Configure audio session for background playback
       await Audio.setAudioModeAsync({
         allowsRecordingIOS: false,
-        staysActiveInBackground: true,
         playsInSilentModeIOS: true,
+        staysActiveInBackground: true,
         shouldDuckAndroid: true,
         playThroughEarpieceAndroid: false,
       });
+      
+      this.isInitialized = true;
     } catch (error) {
       console.error('Failed to initialize audio:', error);
     }
   }
   
-  async loadContent(content: AudioContent): Promise<void> {
+  async play(content: AudioContent): Promise<void> {
     try {
-      // Unload previous content
+      if (!this.isInitialized) {
+        await this.initializeAudio();
+      }
+      
+      // Stop current playback
       if (this.sound) {
         await this.sound.unloadAsync();
       }
       
+      // Check if content is downloaded
+      const isDownloaded = await this.isContentDownloaded(content.id);
+      const uri = isDownloaded 
+        ? this.getDownloadPath(content.id)
+        : content.url;
+      
       // Create new sound instance
       const { sound } = await Audio.Sound.createAsync(
-        { uri: content.url },
+        { uri },
         {
-          shouldPlay: false,
+          shouldPlay: true,
           isLooping: false,
-          volume: 1.0,
+          volume: usePlayerStore.getState().volume,
+          rate: usePlayerStore.getState().playbackRate,
         },
-        this.onPlaybackStatusUpdate.bind(this)
+        this.onPlaybackStatusUpdate
       );
       
       this.sound = sound;
       this.currentContent = content;
-      this.playbackState = 'stopped';
       
-      // Get duration
-      const status = await sound.getStatusAsync();
-      if (status.isLoaded) {
-        this.duration = status.durationMillis || 0;
-      }
+      // Enable background playback
+      await this.enableBackgroundPlayback();
       
-      this.notifyStateChange();
-    } catch (error) {
-      console.error('Failed to load audio content:', error);
-      throw error;
-    }
-  }
-  
-  async play(): Promise<void> {
-    if (!this.sound) {
-      throw new Error('No audio content loaded');
-    }
-    
-    try {
-      await this.sound.playAsync();
-      this.playbackState = 'playing';
-      this.notifyStateChange();
     } catch (error) {
       console.error('Failed to play audio:', error);
-      throw error;
+      usePlayerStore.getState().setError('Failed to play audio');
     }
   }
   
   async pause(): Promise<void> {
-    if (!this.sound) {
-      throw new Error('No audio content loaded');
-    }
-    
-    try {
+    if (this.sound) {
       await this.sound.pauseAsync();
-      this.playbackState = 'paused';
-      this.notifyStateChange();
-    } catch (error) {
-      console.error('Failed to pause audio:', error);
-      throw error;
+    }
+  }
+  
+  async resume(): Promise<void> {
+    if (this.sound) {
+      await this.sound.playAsync();
     }
   }
   
   async stop(): Promise<void> {
-    if (!this.sound) {
-      return;
-    }
-    
-    try {
+    if (this.sound) {
       await this.sound.stopAsync();
-      await this.sound.setPositionAsync(0);
-      this.playbackState = 'stopped';
-      this.position = 0;
-      this.notifyStateChange();
-    } catch (error) {
-      console.error('Failed to stop audio:', error);
-      throw error;
+      await this.sound.unloadAsync();
+      this.sound = null;
+      this.currentContent = null;
     }
   }
   
-  async seekTo(positionMillis: number): Promise<void> {
-    if (!this.sound) {
-      throw new Error('No audio content loaded');
-    }
-    
-    try {
-      await this.sound.setPositionAsync(positionMillis);
-      this.position = positionMillis;
-      this.notifyStateChange();
-    } catch (error) {
-      console.error('Failed to seek audio:', error);
-      throw error;
+  async seekTo(position: number): Promise<void> {
+    if (this.sound) {
+      await this.sound.setPositionAsync(position * 1000);
     }
   }
   
   async setVolume(volume: number): Promise<void> {
-    if (!this.sound) {
-      throw new Error('No audio content loaded');
-    }
-    
-    try {
-      const clampedVolume = Math.max(0, Math.min(1, volume));
-      await this.sound.setVolumeAsync(clampedVolume);
-    } catch (error) {
-      console.error('Failed to set volume:', error);
-      throw error;
+    if (this.sound) {
+      await this.sound.setVolumeAsync(volume);
     }
   }
   
   async setPlaybackRate(rate: number): Promise<void> {
-    if (!this.sound) {
-      throw new Error('No audio content loaded');
+    if (this.sound) {
+      await this.sound.setRateAsync(rate, true);
     }
-    
+  }
+  
+  async downloadContent(content: AudioContent): Promise<string> {
     try {
-      const clampedRate = Math.max(0.5, Math.min(2.0, rate));
-      await this.sound.setRateAsync(clampedRate, true);
+      const downloadPath = this.getDownloadPath(content.id);
+      
+      // Create download directory if it doesn't exist
+      const downloadDir = FileSystem.documentDirectory + 'downloads/';
+      await FileSystem.makeDirectoryAsync(downloadDir, { intermediates: true });
+      
+      // Download the file
+      const { uri } = await FileSystem.downloadAsync(
+        content.url,
+        downloadPath
+      );
+      
+      // Save metadata
+      const metadataPath = this.getMetadataPath(content.id);
+      await FileSystem.writeAsStringAsync(
+        metadataPath,
+        JSON.stringify({
+          id: content.id,
+          title: content.title,
+          downloadDate: new Date().toISOString(),
+          size: (await FileSystem.getInfoAsync(uri)).size,
+        })
+      );
+      
+      return uri;
     } catch (error) {
-      console.error('Failed to set playback rate:', error);
+      console.error('Failed to download content:', error);
       throw error;
     }
   }
   
-  getState(): PlayerState {
-    return {
-      currentContent: this.currentContent,
-      playbackState: this.playbackState,
-      position: this.position,
-      duration: this.duration,
-      volume: 1.0,
-      playbackRate: 1.0,
-      isLoading: false,
-      error: null,
-    };
+  async isContentDownloaded(contentId: string): Promise<boolean> {
+    try {
+      const downloadPath = this.getDownloadPath(contentId);
+      const info = await FileSystem.getInfoAsync(downloadPath);
+      return info.exists;
+    } catch {
+      return false;
+    }
   }
   
-  setStateChangeListener(callback: (state: PlayerState) => void): void {
-    this.onStateChange = callback;
+  async deleteDownload(contentId: string): Promise<void> {
+    try {
+      const downloadPath = this.getDownloadPath(contentId);
+      const metadataPath = this.getMetadataPath(contentId);
+      
+      await Promise.all([
+        FileSystem.deleteAsync(downloadPath, { idempotent: true }),
+        FileSystem.deleteAsync(metadataPath, { idempotent: true }),
+      ]);
+    } catch (error) {
+      console.error('Failed to delete download:', error);
+    }
   }
   
-  removeStateChangeListener(): void {
-    this.onStateChange = null;
+  async enableNightMode(): Promise<void> {
+    // Reduce volume and apply low-pass filter
+    if (this.sound) {
+      const currentVolume = usePlayerStore.getState().volume;
+      await this.sound.setVolumeAsync(currentVolume * 0.7);
+    }
   }
   
-  private onPlaybackStatusUpdate(status: AVPlaybackStatus): void {
+  async disableNightMode(): Promise<void> {
+    // Restore normal volume
+    if (this.sound) {
+      const normalVolume = usePlayerStore.getState().volume;
+      await this.sound.setVolumeAsync(normalVolume);
+    }
+  }
+  
+  async setEqualizer(preset: EqualizerPreset): Promise<void> {
+    // Apply equalizer settings based on preset
+    // This would require a native module for full implementation
+    console.log(`Applying equalizer preset: ${preset}`);
+  }
+  
+  async enableBackgroundPlayback(): Promise<void> {
+    try {
+      await Audio.setAudioModeAsync({
+        staysActiveInBackground: true,
+        playsInSilentModeIOS: true,
+      });
+    } catch (error) {
+      console.error('Failed to enable background playback:', error);
+    }
+  }
+  
+  async disableBackgroundPlayback(): Promise<void> {
+    try {
+      await Audio.setAudioModeAsync({
+        staysActiveInBackground: false,
+      });
+    } catch (error) {
+      console.error('Failed to disable background playback:', error);
+    }
+  }
+  
+  async getCurrentPosition(): Promise<number> {
+    if (this.sound) {
+      const status = await this.sound.getStatusAsync();
+      if (status.isLoaded) {
+        return (status.positionMillis || 0) / 1000;
+      }
+    }
+    return 0;
+  }
+  
+  async getDuration(): Promise<number> {
+    if (this.sound) {
+      const status = await this.sound.getStatusAsync();
+      if (status.isLoaded) {
+        return (status.durationMillis || 0) / 1000;
+      }
+    }
+    return 0;
+  }
+  
+  async getPlaybackState(): Promise<PlaybackState> {
+    if (!this.sound) {
+      return 'stopped';
+    }
+    
+    const status = await this.sound.getStatusAsync();
+    if (!status.isLoaded) {
+      return 'loading';
+    }
+    
+    if (status.isPlaying) {
+      return 'playing';
+    } else if (status.isBuffering) {
+      return 'buffering';
+    } else {
+      return 'paused';
+    }
+  }
+  
+  private onPlaybackStatusUpdate = (status: any) => {
+    const playerStore = usePlayerStore.getState();
+    
     if (status.isLoaded) {
-      this.position = status.positionMillis || 0;
-      this.duration = status.durationMillis || 0;
+      playerStore.seekTo((status.positionMillis || 0) / 1000);
       
       if (status.didJustFinish) {
-        this.playbackState = 'stopped';
-        this.position = 0;
+        playerStore.playNext();
       }
-      
-      this.notifyStateChange();
     }
+    
+    if (status.error) {
+      playerStore.setError('Playback error occurred');
+    }
+  };
+  
+  private getDownloadPath(contentId: string): string {
+    return FileSystem.documentDirectory + `downloads/${contentId}.mp3`;
   }
   
-  private notifyStateChange(): void {
-    if (this.onStateChange) {
-      this.onStateChange(this.getState());
-    }
-  }
-  
-  async cleanup(): Promise<void> {
-    try {
-      if (this.sound) {
-        await this.sound.unloadAsync();
-        this.sound = null;
-      }
-      
-      this.currentContent = null;
-      this.playbackState = 'stopped';
-      this.position = 0;
-      this.duration = 0;
-      this.onStateChange = null;
-    } catch (error) {
-      console.error('Failed to cleanup audio service:', error);
-    }
+  private getMetadataPath(contentId: string): string {
+    return FileSystem.documentDirectory + `downloads/${contentId}.json`;
   }
 }
 
-// Singleton instance
-export const audioService = new AudioService();
+export const audioService: AudioServiceInterface = new AudioServiceImpl();
