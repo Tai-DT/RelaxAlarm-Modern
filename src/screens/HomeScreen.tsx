@@ -1,5 +1,5 @@
 /**
- * Modern Home Screen with Dashboard
+ * Updated Home Screen with Natural Color Palette
  */
 
 import React, { useEffect } from 'react';
@@ -77,8 +77,8 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   const renderWelcomeSection = () => (
     <LinearGradient
       colors={[
-        theme.colors.primary + '20',
-        theme.colors.secondary + '10',
+        theme.colors.primaryContainer + '60',
+        theme.colors.tertiaryContainer + '40',
         'transparent'
       ]}
       style={styles.welcomeContainer}
@@ -89,7 +89,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
             {getGreeting()}
           </Text>
           <Text style={[styles.userName, { color: theme.colors.primary }]}>
-            {user?.name || 'User'}! 👋
+            {user?.name || 'User'}! 🌿
           </Text>
         </View>
         
@@ -110,12 +110,12 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
     <Animated.View style={[styles.statsContainer, statsAnimatedStyle]}>
       <Card variant="elevated" padding="md" style={styles.statsCard}>
         <Text style={[styles.statsTitle, { color: theme.colors.onSurface }]}>
-          Today's Overview
+          Today's Relaxation
         </Text>
         
         <View style={styles.statsGrid}>
           <View style={styles.statItem}>
-            <View style={[styles.statIcon, { backgroundColor: theme.colors.primary + '20' }]}>
+            <View style={[styles.statIcon, { backgroundColor: theme.colors.primaryContainer }]}>
               <Ionicons name="moon" size={24} color={theme.colors.primary} />
             </View>
             <Text style={[styles.statValue, { color: theme.colors.onSurface }]}>
@@ -127,7 +127,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
           </View>
           
           <View style={styles.statItem}>
-            <View style={[styles.statIcon, { backgroundColor: theme.colors.secondary + '20' }]}>
+            <View style={[styles.statIcon, { backgroundColor: theme.colors.secondaryContainer }]}>
               <Ionicons name="musical-notes" size={24} color={theme.colors.secondary} />
             </View>
             <Text style={[styles.statValue, { color: theme.colors.onSurface }]}>
@@ -139,8 +139,8 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
           </View>
           
           <View style={styles.statItem}>
-            <View style={[styles.statIcon, { backgroundColor: theme.colors.tertiary + '20' }]}>
-              <Ionicons name="star" size={24} color={theme.colors.tertiary} />
+            <View style={[styles.statIcon, { backgroundColor: theme.colors.tertiaryContainer }]}>
+              <Ionicons name="leaf" size={24} color={theme.colors.tertiary} />
             </View>
             <Text style={[styles.statValue, { color: theme.colors.onSurface }]}>
               {Math.round(sleepStats.averageQuality || 0)}
@@ -162,7 +162,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
         <Card 
           variant="filled" 
           padding="md" 
-          style={styles.playingCard}
+          style={[styles.playingCard, { backgroundColor: theme.colors.surfaceContainer }]}
           onPress={() => {
             // Navigate to player
             if (currentContent.type === 'audiobook') {
@@ -175,7 +175,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
           <View style={styles.playingHeader}>
             <View style={styles.playingInfo}>
               <Text style={[styles.playingLabel, { color: theme.colors.primary }]}>
-                Now Playing
+                Now Playing 🎵
               </Text>
               <Text style={[styles.playingTitle, { color: theme.colors.onSurface }]} numberOfLines={1}>
                 {currentContent.title}
@@ -202,7 +202,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
     <Animated.View style={cardAnimatedStyle}>
       <Card variant="outlined" padding="md" style={styles.actionsCard}>
         <Text style={[styles.actionsTitle, { color: theme.colors.onSurface }]}>
-          Quick Actions
+          Explore Relaxation 🧘‍♀️
         </Text>
         
         <View style={styles.actionsGrid}>
@@ -238,12 +238,12 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
           
           <Button
             variant="text"
-            color="primary"
+            color="tertiary"
             icon="alarm"
             onPress={() => navigation.navigate('Alarms')}
             style={styles.actionButton}
           >
-            Alarms
+            Gentle Alarms
           </Button>
         </View>
       </Card>
@@ -253,7 +253,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   return (
     <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
       <Header
-        title="RelaxAlarm"
+        title="RelaxAlarm 🌙"
         rightIcon="settings"
         onRightPress={() => navigation.navigate('Settings')}
         transparent
@@ -336,7 +336,7 @@ const styles = StyleSheet.create({
     borderRadius: 24,
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 8,
+    marginBottom: 12,
   },
   statValue: {
     fontSize: 20,
