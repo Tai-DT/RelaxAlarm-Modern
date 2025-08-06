@@ -1,5 +1,5 @@
 /**
- * Modern Login Screen
+ * Updated Login Screen with Natural Color Palette
  */
 
 import React, { useState } from 'react';
@@ -135,26 +135,35 @@ const LoginScreen: React.FC = () => {
   
   const renderLogo = () => (
     <Animated.View style={[styles.logoContainer, logoAnimatedStyle]}>
-      <View style={[styles.logoIcon, { backgroundColor: theme.colors.primary }]}>
-        <Text style={[styles.logoText, { color: theme.colors.onPrimary }]}>🌙</Text>
-      </View>
+      <LinearGradient
+        colors={[theme.colors.primary, theme.colors.tertiary]}
+        style={styles.logoIcon}
+      >
+        <Text style={[styles.logoText, { color: theme.colors.onPrimary }]}>
+          🌿
+        </Text>
+      </LinearGradient>
       <Text style={[styles.appName, { color: theme.colors.onSurface }]}>
         RelaxAlarm
       </Text>
       <Text style={[styles.appTagline, { color: theme.colors.onSurfaceVariant }]}>
-        Your Sleep & Relaxation Companion
+        Your Natural Sleep & Relaxation Companion
       </Text>
     </Animated.View>
   );
   
   const renderForm = () => (
     <Animated.View style={formAnimatedStyle}>
-      <Card variant="elevated" padding="lg" style={styles.formCard}>
+      <Card 
+        variant="elevated" 
+        padding="lg" 
+        style={[styles.formCard, { backgroundColor: theme.colors.surfaceContainer }]}
+      >
         <Text style={[styles.formTitle, { color: theme.colors.onSurface }]}>
-          Welcome Back
+          Welcome Back 🌙
         </Text>
         <Text style={[styles.formSubtitle, { color: theme.colors.onSurfaceVariant }]}>
-          Sign in to continue your relaxation journey
+          Sign in to continue your peaceful journey
         </Text>
         
         <View style={styles.formFields}>
@@ -199,7 +208,7 @@ const LoginScreen: React.FC = () => {
           style={styles.loginButton}
           testID="login-button"
         >
-          Sign In
+          Sign In to Relax
         </Button>
         
         <View style={styles.divider}>
@@ -215,14 +224,29 @@ const LoginScreen: React.FC = () => {
             // Navigate to register
           }}
           variant="outlined"
-          color="primary"
+          color="secondary"
           size="large"
           fullWidth
           icon="person-add-outline"
           testID="register-button"
         >
-          Create Account
+          Create New Account
         </Button>
+        
+        <View style={styles.helpSection}>
+          <Text style={[styles.helpText, { color: theme.colors.onSurfaceVariant }]}>
+            Need help? 
+          </Text>
+          <Button
+            variant="text"
+            size="small"
+            onPress={() => {
+              // Handle forgot password
+            }}
+          >
+            Forgot Password?
+          </Button>
+        </View>
       </Card>
     </Animated.View>
   );
@@ -230,9 +254,9 @@ const LoginScreen: React.FC = () => {
   return (
     <LinearGradient
       colors={[
-        theme.colors.primary + '10',
+        theme.colors.primaryContainer + '30',
         theme.colors.background,
-        theme.colors.secondary + '05',
+        theme.colors.tertiaryContainer + '20',
       ]}
       style={styles.container}
     >
@@ -297,6 +321,7 @@ const styles = StyleSheet.create({
   appTagline: {
     fontSize: 16,
     textAlign: 'center',
+    lineHeight: 22,
   },
   formCard: {
     // Card styles handled by Card component
@@ -311,6 +336,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textAlign: 'center',
     marginBottom: 32,
+    lineHeight: 22,
   },
   formFields: {
     marginBottom: 16,
@@ -334,6 +360,15 @@ const styles = StyleSheet.create({
   },
   dividerText: {
     marginHorizontal: 16,
+    fontSize: 14,
+  },
+  helpSection: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 16,
+  },
+  helpText: {
     fontSize: 14,
   },
 });
