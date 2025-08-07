@@ -1,282 +1,244 @@
 /**
- * Updated Login Screen with Natural Color Palette
+ * Modern Login Screen with Natural Forest Theme
  */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
-  ScrollView,
   StyleSheet,
-  Alert,
+  TouchableOpacity,
   KeyboardAvoidingView,
   Platform,
+  Alert,
 } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { Ionicons } from '@expo/vector-icons';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
   withTiming,
+  withSpring,
   withDelay,
+  FadeInDown,
+  FadeInUp,
 } from 'react-native-reanimated';
+import { LinearGradient } from 'expo-linear-gradient';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
-// Import components
+// Import components and stores
 import { Button, TextField, Card } from '../components/ui';
-
-// Import stores
-import { useAuthStore, useThemeStore } from '../stores';
+import { useUserStore, useThemeStore } from '../stores';
 import { lightAppTheme, darkAppTheme } from '../constants/theme';
-import { LoginForm, ValidationRule } from '../types';
 
 const LoginScreen: React.FC = () => {
-  const { login, isLoading, error } = useAuthStore();
+  const { login } = useUserStore();
   const { isDark } = useThemeStore();
   const theme = isDark ? darkAppTheme : lightAppTheme;
   
   // Form state
-  const [form, setForm] = useState<LoginForm>({
-    email: { value: '', error: '', touched: false },
-    password: { value: '', error: '', touched: false },
-  });
+  const [email, setEmail] = useState('demo@relaxalarm.com');
+  const [password, setPassword] = useState('demo123');
+  const [isLoading, setIsLoading] = useState(false);
   
-  // Animations
-  const logoOpacity = useSharedValue(0);
-  const formTranslateY = useSharedValue(50);
+  // Animation values
+  const logoScale = useSharedValue(0.8);
+  const logoRotation = useSharedValue(-5);
+  const contentOpacity = useSharedValue(0);
   
-  React.useEffect(() => {
-    logoOpacity.value = withTiming(1, { duration: 800 });
-    formTranslateY.value = withDelay(200, withTiming(0, { duration: 600 }));
+  useEffect(() => {
+    // Start animations
+    logoScale.value = withSpring(1, { damping: 15 });
+    logoRotation.value = withSpring(0, { damping: 20 });
+    contentOpacity.value = withDelay(300, withTiming(1, { duration: 800 }));
   }, []);
   
   const logoAnimatedStyle = useAnimatedStyle(() => ({
-    opacity: logoOpacity.value,
+    transform: [
+      { scale: logoScale.value },
+      { rotate: `${logoRotation.value}deg` },
+    ],
   }));
   
-  const formAnimatedStyle = useAnimatedStyle(() => ({
-    transform: [{ translateY: formTranslateY.value }],
-    opacity: formTranslateY.value === 0 ? 1 : 0,
+  const contentAnimatedStyle = useAnimatedStyle(() => ({
+    opacity: contentOpacity.value,
   }));
-  
-  // Validation rules
-  const validationRules: Record<string, ValidationRule> = {
-    email: {
-      required: true,
-      pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-    },
-    password: {
-      required: true,
-      minLength: 6,
-    },
-  };
-  
-  const validateField = (field: string, value: string): string => {
-    const rules = validationRules[field];
-    if (!rules) return '';
-    
-    if (rules.required && !value.trim()) {
-      return `${field.charAt(0).toUpperCase() + field.slice(1)} is required`;
-    }
-    
-    if (rules.minLength && value.length < rules.minLength) {
-      return `${field.charAt(0).toUpperCase() + field.slice(1)} must be at least ${rules.minLength} characters`;
-    }
-    
-    if (rules.pattern && !rules.pattern.test(value)) {
-      return field === 'email' ? 'Please enter a valid email address' : 'Invalid format';
-    }
-    
-    return '';
-  };
-  
-  const updateField = (field: keyof LoginForm, value: string) => {
-    const error = validateField(field, value);
-    setForm(prev => ({
-      ...prev,
-      [field]: {
-        value,
-        error,
-        touched: true,
-      },
-    }));
-  };
-  
-  const validateForm = (): boolean => {
-    let isValid = true;
-    const newForm = { ...form };
-    
-    Object.keys(form).forEach(field => {
-      const fieldKey = field as keyof LoginForm;
-      const error = validateField(field, form[fieldKey].value);
-      newForm[fieldKey] = {
-        ...form[fieldKey],
-        error,
-        touched: true,
-      };
-      if (error) isValid = false;
-    });
-    
-    setForm(newForm);
-    return isValid;
-  };
   
   const handleLogin = async () => {
-    if (!validateForm()) {
-      Alert.alert('Validation Error', 'Please fix the errors in the form');
+    if (!email || !password) {
+      Alert.alert('Lỗi', 'Vui lòng nhập đầy đủ thông tin');
       return;
     }
     
+    setIsLoading(true);
+    
     try {
-      await login(form.email.value, form.password.value);
-    } catch (err) {
-      Alert.alert('Login Failed', error || 'An error occurred during login');
+      // Simulate login delay
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      
+      // Mock login success
+      await login({
+        id: '1',
+        email,
+        name: 'Nature Lover',
+        profilePicture: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face',
+        isPremium: false,
+        preferences: {
+          favoriteGenres: ['nature', 'sleep'],
+          sleepGoal: 8,
+          wakeUpTime: '07:00',
+          bedTime: '23:00',
+          enableSmartAlarms: true,
+          preferredNarrators: [],
+          autoDownload: false,
+          dataUsageLimit: 500,
+        },
+        stats: {
+          totalListeningTime: 2700, // 45 hours
+          sleepSessions: 127,
+          meditationSessions: 45,
+          currentStreak: 23,
+          longestStreak: 45,
+          favoriteContent: [],
+          weeklyProgress: [],
+        },
+        createdAt: new Date(),
+        lastLoginAt: new Date(),
+      });
+      
+    } catch (error) {
+      Alert.alert('Lỗi đăng nhập', 'Không thể đăng nhập. Vui lòng thử lại.');
+    } finally {
+      setIsLoading(false);
     }
   };
   
-  const renderLogo = () => (
-    <Animated.View style={[styles.logoContainer, logoAnimatedStyle]}>
-      <LinearGradient
-        colors={[theme.colors.primary, theme.colors.tertiary]}
-        style={styles.logoIcon}
-      >
-        <Text style={[styles.logoText, { color: theme.colors.onPrimary }]}>
-          🌿
-        </Text>
-      </LinearGradient>
-      <Text style={[styles.appName, { color: theme.colors.onSurface }]}>
-        RelaxAlarm
-      </Text>
-      <Text style={[styles.appTagline, { color: theme.colors.onSurfaceVariant }]}>
-        Your Natural Sleep & Relaxation Companion
-      </Text>
-    </Animated.View>
-  );
-  
-  const renderForm = () => (
-    <Animated.View style={formAnimatedStyle}>
-      <Card 
-        variant="elevated" 
-        padding="lg" 
-        style={[styles.formCard, { backgroundColor: theme.colors.surfaceContainer }]}
-      >
-        <Text style={[styles.formTitle, { color: theme.colors.onSurface }]}>
-          Welcome Back 🌙
-        </Text>
-        <Text style={[styles.formSubtitle, { color: theme.colors.onSurfaceVariant }]}>
-          Sign in to continue your peaceful journey
-        </Text>
-        
-        <View style={styles.formFields}>
-          <TextField
-            label="Email"
-            value={form.email.value}
-            onChangeText={(value) => updateField('email', value)}
-            error={form.email.touched ? form.email.error : undefined}
-            keyboardType="email-address"
-            autoCapitalize="none"
-            autoCorrect={false}
-            leftIcon="mail-outline"
-            testID="email-input"
-          />
-          
-          <TextField
-            label="Password"
-            value={form.password.value}
-            onChangeText={(value) => updateField('password', value)}
-            error={form.password.touched ? form.password.error : undefined}
-            secureTextEntry
-            leftIcon="lock-closed-outline"
-            rightIcon="eye-off"
-            testID="password-input"
-          />
-        </View>
-        
-        {error && (
-          <Text style={[styles.errorText, { color: theme.colors.error }]}>
-            {error}
-          </Text>
-        )}
-        
-        <Button
-          onPress={handleLogin}
-          loading={isLoading}
-          disabled={isLoading}
-          variant="filled"
-          color="primary"
-          size="large"
-          fullWidth
-          style={styles.loginButton}
-          testID="login-button"
-        >
-          Sign In to Relax
-        </Button>
-        
-        <View style={styles.divider}>
-          <View style={[styles.dividerLine, { backgroundColor: theme.colors.outline }]} />
-          <Text style={[styles.dividerText, { color: theme.colors.onSurfaceVariant }]}>
-            or
-          </Text>
-          <View style={[styles.dividerLine, { backgroundColor: theme.colors.outline }]} />
-        </View>
-        
-        <Button
-          onPress={() => {
-            // Navigate to register
-          }}
-          variant="outlined"
-          color="secondary"
-          size="large"
-          fullWidth
-          icon="person-add-outline"
-          testID="register-button"
-        >
-          Create New Account
-        </Button>
-        
-        <View style={styles.helpSection}>
-          <Text style={[styles.helpText, { color: theme.colors.onSurfaceVariant }]}>
-            Need help? 
-          </Text>
-          <Button
-            variant="text"
-            size="small"
-            onPress={() => {
-              // Handle forgot password
-            }}
-          >
-            Forgot Password?
-          </Button>
-        </View>
-      </Card>
-    </Animated.View>
-  );
-  
   return (
-    <LinearGradient
-      colors={[
-        theme.colors.primaryContainer + '30',
-        theme.colors.background,
-        theme.colors.tertiaryContainer + '20',
-      ]}
-      style={styles.container}
-    >
-      <SafeAreaView style={styles.safeArea}>
-        <KeyboardAvoidingView
+    <SafeAreaView style={[styles.container, { backgroundColor: theme.colors.background }]}>
+      <LinearGradient
+        colors={[
+          theme.colors.primaryContainer + '40',
+          theme.colors.tertiaryContainer + '30',
+          theme.colors.background,
+        ]}
+        style={styles.gradient}
+      >
+        <KeyboardAvoidingView 
           style={styles.keyboardView}
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         >
-          <ScrollView 
-            style={styles.scrollView}
-            contentContainerStyle={styles.scrollContent}
-            showsVerticalScrollIndicator={false}
-            keyboardShouldPersistTaps="handled"
-          >
-            {renderLogo()}
-            {renderForm()}
-          </ScrollView>
+          {/* Header Section */}
+          <Animated.View style={[styles.header, logoAnimatedStyle]}>
+            <View style={[styles.logoContainer, { backgroundColor: theme.colors.primary }]}>
+              <Ionicons name="leaf" size={48} color={theme.colors.onPrimary} />
+            </View>
+            
+            <Text style={[styles.appTitle, { color: theme.colors.onSurface }]}>
+              RelaxAlarm 🌿
+            </Text>
+            
+            <Text style={[styles.appSubtitle, { color: theme.colors.onSurfaceVariant }]}>
+              Natural Sleep & Relaxation Companion
+            </Text>
+          </Animated.View>
+          
+          {/* Login Form */}
+          <Animated.View style={[styles.formContainer, contentAnimatedStyle]}>
+            <Animated.View entering={FadeInDown.delay(400).duration(600)}>
+              <Card variant="elevated" style={styles.formCard}>
+                <LinearGradient
+                  colors={[
+                    theme.colors.surface,
+                    theme.colors.surfaceContainer + '50',
+                  ]}
+                  style={styles.cardGradient}
+                >
+                  <Text style={[styles.formTitle, { color: theme.colors.onSurface }]}>
+                    Chào mừng trở lại! 🍃
+                  </Text>
+                  
+                  <View style={styles.formFields}>
+                    <TextField
+                      placeholder="Email của bạn"
+                      value={email}
+                      onChangeText={setEmail}
+                      keyboardType="email-address"
+                      autoCapitalize="none"
+                      leftIcon="mail"
+                      style={styles.textField}
+                    />
+                    
+                    <TextField
+                      placeholder="Mật khẩu"
+                      value={password}
+                      onChangeText={setPassword}
+                      secureTextEntry
+                      leftIcon="lock-closed"
+                      style={styles.textField}
+                    />
+                  </View>
+                  
+                  <Button
+                    variant="filled"
+                    color="primary"
+                    onPress={handleLogin}
+                    loading={isLoading}
+                    icon="log-in"
+                    style={styles.loginButton}
+                  >
+                    {isLoading ? 'Đang đăng nhập...' : 'Đăng nhập với thiên nhiên'}
+                  </Button>
+                  
+                  <TouchableOpacity style={styles.forgotPassword}>
+                    <Text style={[styles.forgotText, { color: theme.colors.primary }]}>
+                      Quên mật khẩu? 🌱
+                    </Text>
+                  </TouchableOpacity>
+                </LinearGradient>
+              </Card>
+            </Animated.View>
+            
+            {/* Social Login */}
+            <Animated.View 
+              entering={FadeInDown.delay(600).duration(600)}
+              style={styles.socialContainer}
+            >
+              <Text style={[styles.socialText, { color: theme.colors.onSurfaceVariant }]}>
+                Hoặc đăng nhập với
+              </Text>
+              
+              <View style={styles.socialButtons}>
+                <TouchableOpacity 
+                  style={[styles.socialButton, { backgroundColor: theme.colors.surfaceVariant }]}
+                >
+                  <Ionicons name="logo-google" size={24} color={theme.colors.onSurfaceVariant} />
+                </TouchableOpacity>
+                
+                <TouchableOpacity 
+                  style={[styles.socialButton, { backgroundColor: theme.colors.surfaceVariant }]}
+                >
+                  <Ionicons name="logo-apple" size={24} color={theme.colors.onSurfaceVariant} />
+                </TouchableOpacity>
+              </View>
+            </Animated.View>
+            
+            {/* Sign Up */}
+            <Animated.View 
+              entering={FadeInUp.delay(800).duration(600)}
+              style={styles.signupContainer}
+            >
+              <Text style={[styles.signupText, { color: theme.colors.onSurfaceVariant }]}>
+                Chưa có tài khoản?
+              </Text>
+              <TouchableOpacity>
+                <Text style={[styles.signupLink, { color: theme.colors.primary }]}>
+                  {' '}Tạo tài khoản mới 🌿
+                </Text>
+              </TouchableOpacity>
+            </Animated.View>
+          </Animated.View>
         </KeyboardAvoidingView>
-      </SafeAreaView>
-    </LinearGradient>
+      </LinearGradient>
+    </SafeAreaView>
   );
 };
 
@@ -284,92 +246,108 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  safeArea: {
+  gradient: {
     flex: 1,
   },
   keyboardView: {
     flex: 1,
-  },
-  scrollView: {
-    flex: 1,
-  },
-  scrollContent: {
-    flexGrow: 1,
-    justifyContent: 'center',
     padding: 24,
   },
-  logoContainer: {
+  header: {
     alignItems: 'center',
-    marginBottom: 48,
+    paddingTop: 40,
+    paddingBottom: 40,
   },
-  logoIcon: {
+  logoContainer: {
     width: 80,
     height: 80,
     borderRadius: 40,
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 16,
+    marginBottom: 24,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.15,
+    shadowRadius: 8,
+    elevation: 8,
   },
-  logoText: {
-    fontSize: 32,
-  },
-  appName: {
+  appTitle: {
     fontSize: 28,
     fontWeight: 'bold',
     marginBottom: 8,
   },
-  appTagline: {
+  appSubtitle: {
     fontSize: 16,
     textAlign: 'center',
     lineHeight: 22,
+  },
+  formContainer: {
+    flex: 1,
+    justifyContent: 'center',
   },
   formCard: {
-    // Card styles handled by Card component
+    marginBottom: 24,
+    overflow: 'hidden',
+  },
+  cardGradient: {
+    padding: 24,
   },
   formTitle: {
-    fontSize: 24,
+    fontSize: 22,
     fontWeight: 'bold',
-    marginBottom: 8,
     textAlign: 'center',
-  },
-  formSubtitle: {
-    fontSize: 16,
-    textAlign: 'center',
-    marginBottom: 32,
-    lineHeight: 22,
+    marginBottom: 24,
   },
   formFields: {
-    marginBottom: 16,
+    gap: 16,
+    marginBottom: 24,
   },
-  errorText: {
-    fontSize: 14,
-    textAlign: 'center',
-    marginBottom: 16,
+  textField: {
+    // TextField styles handled by component
   },
   loginButton: {
-    marginBottom: 24,
+    marginBottom: 16,
   },
-  divider: {
-    flexDirection: 'row',
+  forgotPassword: {
+    alignItems: 'center',
+  },
+  forgotText: {
+    fontSize: 14,
+    fontWeight: '500',
+  },
+  socialContainer: {
     alignItems: 'center',
     marginBottom: 24,
   },
-  dividerLine: {
-    flex: 1,
-    height: 1,
-  },
-  dividerText: {
-    marginHorizontal: 16,
+  socialText: {
     fontSize: 14,
+    marginBottom: 16,
   },
-  helpSection: {
+  socialButtons: {
     flexDirection: 'row',
+    gap: 16,
+  },
+  socialButton: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: 16,
   },
-  helpText: {
+  signupContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  signupText: {
     fontSize: 14,
+  },
+  signupLink: {
+    fontSize: 14,
+    fontWeight: '600',
   },
 });
 
