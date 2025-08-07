@@ -1,36 +1,16 @@
 /**
- * Complete Type Definitions for RelaxAlarm Modern
+ * TypeScript Type Definitions
  */
 
-import { NavigatorScreenParams } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
+import { CompositeScreenProps } from '@react-navigation/native';
 
-// =============================================================================
 // Navigation Types
-// =============================================================================
-
 export type RootStackParamList = {
-  // Auth Stack
   Login: undefined;
-  Register: undefined;
-  ForgotPassword: undefined;
-  
-  // Main App
-  MainTabs: NavigatorScreenParams<MainTabParamList>;
-  
-  // Modal Screens
-  PodcastPlayer: { podcast: Podcast };
-  AudioPlayer: { content: AudioContent };
-  AlarmSettings: { alarmId?: string };
+  MainTabs: undefined;
   Settings: undefined;
-  Profile: undefined;
-  Premium: undefined;
-  
-  // Content Screens
-  PodcastDetails: { podcastId: string };
-  PlaylistDetails: { playlistId: string };
-  CategoryBrowser: { category: string };
 };
 
 export type MainTabParamList = {
@@ -41,31 +21,129 @@ export type MainTabParamList = {
   Profile: undefined;
 };
 
-// =============================================================================
-// User & Authentication Types
-// =============================================================================
+export type RootStackScreenProps<T extends keyof RootStackParamList> =
+  NativeStackScreenProps<RootStackParamList, T>;
 
-export interface User {
+export type MainTabScreenProps<T extends keyof MainTabParamList> =
+  CompositeScreenProps<
+    BottomTabScreenProps<MainTabParamList, T>,
+    RootStackScreenProps<keyof RootStackParamList>
+  >;
+
+// Audio Types
+export interface AudioTrack {
+  id: string;
+  title: string;
+  artist: string;
+  duration: number;
+  url: string;
+  artwork?: string;
+  category: string;
+  description?: string;
+  rating?: number;
+  playCount?: number;
+  isFavorite?: boolean;
+  isDownloaded?: boolean;
+  downloadProgress?: number;
+  tags?: string[];
+  genre?: string;
+  releaseDate?: Date;
+  fileSize?: number;
+  bitrate?: number;
+  chapters?: AudioChapter[];
+}
+
+export interface AudioChapter {
+  id: string;
+  title: string;
+  startTime: number;
+  endTime: number;
+  description?: string;
+}
+
+export interface PlaylistTrack extends AudioTrack {
+  addedAt: Date;
+  addedBy: string;
+  position: number;
+}
+
+export interface Playlist {
+  id: string;
+  name: string;
+  description?: string;
+  coverUrl?: string;
+  tracks: PlaylistTrack[];
+  isPublic: boolean;
+  createdBy: string;
+  createdAt: Date;
+  updatedAt: Date;
+  totalDuration: number;
+  playCount: number;
+  followersCount: number;
+}
+
+// User Types
+export interface UserProfile {
   id: string;
   email: string;
   name: string;
+  username?: string;
   profilePicture?: string;
+  bio?: string;
   isPremium: boolean;
+  isVerified: boolean;
   preferences: UserPreferences;
   stats: UserStats;
+  subscription?: Subscription;
   createdAt: Date;
   lastLoginAt: Date;
+  timezone: string;
+  language: string;
 }
 
 export interface UserPreferences {
   favoriteGenres: string[];
   sleepGoal: number; // hours
-  wakeUpTime: string;
-  bedTime: string;
+  wakeUpTime: string; // HH:MM format
+  bedTime: string; // HH:MM format
   enableSmartAlarms: boolean;
   preferredNarrators: string[];
+  audioQuality: 'low' | 'medium' | 'high';
   autoDownload: boolean;
   dataUsageLimit: number; // MB
+  notifications: NotificationPreferences;
+  privacy: PrivacyPreferences;
+  accessibility: AccessibilityPreferences;
+}
+
+export interface NotificationPreferences {
+  enablePush: boolean;
+  enableEmail: boolean;
+  newReleases: boolean;
+  recommendations: boolean;
+  socialActivity: boolean;
+  systemUpdates: boolean;
+  quietHours: {
+    enabled: boolean;
+    start: string;
+    end: string;
+  };
+}
+
+export interface PrivacyPreferences {
+  profileVisibility: 'public' | 'friends' | 'private';
+  showListeningActivity: boolean;
+  allowDataCollection: boolean;
+  personalizedAds: boolean;
+  shareUsageData: boolean;
+}
+
+export interface AccessibilityPreferences {
+  fontSize: 'small' | 'medium' | 'large' | 'extra-large';
+  highContrast: boolean;
+  reducedMotion: boolean;
+  screenReader: boolean;
+  hapticFeedback: boolean;
 }
 
 export interface UserStats {
@@ -74,488 +152,323 @@ export interface UserStats {
   meditationSessions: number;
   currentStreak: number; // days
   longestStreak: number; // days
-  favoriteContent: AudioContent[];
-  weeklyProgress: WeeklyProgress[];
+  favoriteContent: string[]; // track IDs
+  weeklyProgress: number[]; // minutes per day for last 7 days
+  monthlyProgress: number[]; // minutes per day for last 30 days
+  achievements: Achievement[];
+  level: number;
+  experiencePoints: number;
 }
 
-export interface WeeklyProgress {
-  week: string; // ISO week
-  listeningTime: number;
-  sleepQuality: number; // 1-10
-  sessions: number;
-}
-
-// =============================================================================
-// Audio Content Types
-// =============================================================================
-
-export interface AudioContent {
+export interface Achievement {
   id: string;
-  title: string;
-  author: string;
+  name: string;
   description: string;
-  duration: number; // seconds
-  url: string;
-  coverImage: string;
-  category: ContentCategory;
-  tags: string[];
-  
-  // Metadata
-  rating: number;
-  reviewCount: number;
-  releaseDate: string;
-  language: string;
-  isSubscriptionRequired: boolean;
-  downloadSize?: number; // bytes
-  
-  // Progress tracking
-  isCompleted: boolean;
-  currentPosition?: number; // seconds
-  lastPlayedAt?: Date;
-  
-  // Related content
-  relatedContent?: string[]; // content IDs
-  nextInSeries?: string; // content ID
-  
-  // AI/LLM specific (for podcasts)
-  transcript?: string;
-  chapters?: Chapter[];
+  icon: string;
+  unlockedAt: Date;
+  category: 'listening' | 'sleep' | 'meditation' | 'social' | 'premium';
+  rarity: 'common' | 'rare' | 'epic' | 'legendary';
 }
 
-export interface Podcast extends AudioContent {
-  episodeCount: number;
-  episodes: Episode[];
-  subscriptionInfo?: SubscriptionInfo;
-  updateFrequency: 'daily' | 'weekly' | 'monthly';
-}
-
-export interface Episode {
+export interface Subscription {
   id: string;
-  title: string;
-  description: string;
-  duration: number;
-  url: string;
-  publishDate: string;
-  episodeNumber: number;
-  seasonNumber?: number;
-}
-
-export interface Chapter {
-  id: string;
-  title: string;
-  startTime: number; // seconds
-  endTime: number; // seconds
-  description?: string;
-}
-
-export interface SubscriptionInfo {
-  cost: number;
+  plan: 'free' | 'premium' | 'family';
+  status: 'active' | 'cancelled' | 'expired' | 'pending';
+  startDate: Date;
+  endDate: Date;
+  autoRenew: boolean;
+  paymentMethod: string;
+  price: number;
   currency: string;
-  period: 'monthly' | 'yearly';
-  features: string[];
+  billingCycle: 'monthly' | 'yearly';
 }
 
-export type ContentCategory = 
-  | 'sleep'
-  | 'meditation'
-  | 'nature'
-  | 'stories'
-  | 'music'
-  | 'mindfulness'
-  | 'healing'
-  | 'focus'
-  | 'anxiety'
-  | 'children';
-
-// =============================================================================
 // Alarm Types
-// =============================================================================
-
-export interface Alarm {
+export interface SmartAlarm {
   id: string;
+  time: string; // HH:MM format
   label: string;
-  time: Date;
-  isActive: boolean;
-  repeatDays?: number[]; // 0-6, Sunday = 0
-  
-  // Sound settings
-  soundUri?: string;
-  volume: number;
-  vibrate: boolean;
-  
-  // Smart features
-  isSmartAlarm: boolean;
-  smartWindow: number; // minutes before alarm time
-  gradualWakeUp: boolean;
-  
-  // Snooze settings
+  isEnabled: boolean;
+  repeatDays: WeekDay[];
+  soundId: string;
+  soundType: 'nature' | 'music' | 'tone' | 'custom';
+  volume: number; // 0-100
+  vibration: boolean;
   snoozeEnabled: boolean;
   snoozeDuration: number; // minutes
   maxSnoozes: number;
-  
-  // Weather integration
-  weatherAdjustment: boolean;
-  
-  // Metadata
+  gradualWakeUp: boolean;
+  smartWakeUp: boolean;
+  smartWakeUpWindow: number; // minutes before alarm time
+  fadeInDuration: number; // minutes
+  weatherIntegration: boolean;
+  sleepCycleIntegration: boolean;
   createdAt: Date;
-  lastTriggered?: Date;
-  timesTriggered: number;
+  updatedAt: Date;
 }
 
-export interface SleepCycle {
-  sleepTime: Date;
-  wakeTime: Date;
+export type WeekDay = 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday' | 'sunday';
+
+export interface AlarmSound {
+  id: string;
+  name: string;
+  category: 'nature' | 'music' | 'tone';
+  url: string;
+  duration: number;
+  previewUrl?: string;
+  isPremium: boolean;
+  isDownloaded: boolean;
+  fileSize?: number;
+  description?: string;
+  tags?: string[];
+}
+
+// Sleep Tracking Types
+export interface SleepSession {
+  id: string;
+  userId: string;
+  startTime: Date;
+  endTime: Date;
+  duration: number; // minutes
+  quality: number; // 1-10 scale
   stages: SleepStage[];
-  quality: number; // 1-10
-  efficiency: number; // percentage
+  notes?: string;
+  mood: 'excellent' | 'good' | 'fair' | 'poor';
+  environment: {
+    temperature?: number;
+    humidity?: number;
+    noise?: number;
+    light?: number;
+  };
+  factors: SleepFactor[];
+  createdAt: Date;
 }
 
 export interface SleepStage {
-  stage: 'light' | 'deep' | 'rem' | 'awake';
+  stage: 'awake' | 'light' | 'deep' | 'rem';
   startTime: Date;
   duration: number; // minutes
+  quality: number; // 1-10 scale
 }
 
-// =============================================================================
-// Playback Types
-// =============================================================================
-
-export type PlaybackState = 
-  | 'loading'
-  | 'playing'
-  | 'paused'
-  | 'stopped'
-  | 'buffering'
-  | 'error';
-
-export type RepeatMode = 'off' | 'one' | 'all';
-
-export interface PlaybackSession {
-  id: string;
-  contentId: string;
-  startTime: Date;
-  endTime?: Date;
-  duration: number; // seconds actually played
-  completed: boolean;
-  deviceInfo: DeviceInfo;
+export interface SleepFactor {
+  type: 'caffeine' | 'alcohol' | 'exercise' | 'stress' | 'screen-time' | 'meal' | 'medication';
+  value: number;
+  time: Date;
+  notes?: string;
 }
 
-export interface DeviceInfo {
-  platform: 'ios' | 'android';
-  version: string;
-  model: string;
-  isTablet: boolean;
-}
-
-// =============================================================================
-// Playlist Types
-// =============================================================================
-
-export interface Playlist {
-  id: string;
-  name: string;
-  description?: string;
-  coverImage?: string;
-  isPublic: boolean;
-  createdBy: string; // user ID
-  contentIds: string[];
-  tags: string[];
-  
-  // Metadata
-  createdAt: Date;
-  updatedAt: Date;
-  totalDuration: number; // seconds
-  playCount: number;
-  likeCount: number;
-}
-
-// =============================================================================
-// Download & Offline Types
-// =============================================================================
-
-export interface DownloadItem {
-  contentId: string;
-  status: DownloadStatus;
-  progress: number; // 0-100
-  filePath?: string;
-  size: number; // bytes
-  downloadedAt?: Date;
-  expiresAt?: Date;
-}
-
-export type DownloadStatus = 
-  | 'pending'
-  | 'downloading'
-  | 'completed'
-  | 'failed'
-  | 'paused';
-
-// =============================================================================
-// Analytics & Tracking Types
-// =============================================================================
-
-export interface AnalyticsEvent {
-  id: string;
-  type: EventType;
-  properties: Record<string, any>;
-  timestamp: Date;
-  userId?: string;
-  sessionId: string;
-}
-
-export type EventType = 
-  | 'content_play'
-  | 'content_pause'
-  | 'content_complete'
-  | 'alarm_trigger'
-  | 'alarm_snooze'
-  | 'download_start'
-  | 'download_complete'
-  | 'premium_upgrade'
-  | 'settings_change'
-  | 'sleep_session_start'
-  | 'sleep_session_end';
-
-// =============================================================================
-// Notification Types
-// =============================================================================
-
-export interface NotificationSettings {
-  enabled: boolean;
-  types: NotificationType[];
-  quietHours: QuietHours;
-  frequency: NotificationFrequency;
-}
-
-export type NotificationType = 
-  | 'alarm'
-  | 'reminder'
-  | 'content_recommendation'
-  | 'sleep_tip'
-  | 'milestone'
-  | 'social';
-
-export interface QuietHours {
-  enabled: boolean;
-  startTime: string; // HH:mm
-  endTime: string; // HH:mm
-}
-
-export type NotificationFrequency = 'immediate' | 'hourly' | 'daily' | 'weekly';
-
-// =============================================================================
-// Theme & UI Types
-// =============================================================================
-
+// Theme Types
 export interface ThemeColors {
-  // Primary colors
   primary: string;
   onPrimary: string;
   primaryContainer: string;
   onPrimaryContainer: string;
-  
-  // Secondary colors
   secondary: string;
   onSecondary: string;
   secondaryContainer: string;
   onSecondaryContainer: string;
-  
-  // Tertiary colors
   tertiary: string;
   onTertiary: string;
   tertiaryContainer: string;
   onTertiaryContainer: string;
-  
-  // Error colors
   error: string;
   onError: string;
   errorContainer: string;
   onErrorContainer: string;
-  
-  // Surface colors
+  background: string;
+  onBackground: string;
   surface: string;
   onSurface: string;
   surfaceVariant: string;
   onSurfaceVariant: string;
-  surfaceContainer: string;
-  surfaceContainerHigh: string;
-  surfaceContainerHighest: string;
-  
-  // Background
-  background: string;
-  onBackground: string;
-  
-  // Outline
   outline: string;
   outlineVariant: string;
-  
-  // Other
-  shadow: string;
   scrim: string;
-  inverseSurface: string;
-  inverseOnSurface: string;
-  inversePrimary: string;
+  shadow: string;
 }
 
-export interface AppTheme {
+export interface CustomTheme {
+  id: string;
+  name: string;
   colors: ThemeColors;
-  typography: Typography;
-  spacing: Spacing;
-  borderRadius: BorderRadius;
-  elevation: Elevation;
+  isDark: boolean;
+  isCustom: boolean;
+  createdBy?: string;
+  createdAt?: Date;
 }
 
-export interface Typography {
-  displayLarge: TextStyle;
-  displayMedium: TextStyle;
-  displaySmall: TextStyle;
-  headlineLarge: TextStyle;
-  headlineMedium: TextStyle;
-  headlineSmall: TextStyle;
-  titleLarge: TextStyle;
-  titleMedium: TextStyle;
-  titleSmall: TextStyle;
-  bodyLarge: TextStyle;
-  bodyMedium: TextStyle;
-  bodySmall: TextStyle;
-  labelLarge: TextStyle;
-  labelMedium: TextStyle;
-  labelSmall: TextStyle;
+// Analytics Types
+export interface AnalyticsEvent {
+  id: string;
+  userId: string;
+  eventType: string;
+  eventData: Record<string, any>;
+  timestamp: Date;
+  sessionId: string;
+  deviceInfo: DeviceInfo;
+  appVersion: string;
 }
 
-export interface TextStyle {
-  fontSize: number;
-  fontWeight: string;
-  lineHeight: number;
-  letterSpacing?: number;
+export interface DeviceInfo {
+  platform: 'ios' | 'android';
+  osVersion: string;
+  deviceModel: string;
+  screenWidth: number;
+  screenHeight: number;
+  isTablet: boolean;
 }
 
-export interface Spacing {
-  xs: number;
-  sm: number;
-  md: number;
-  lg: number;
-  xl: number;
-  xxl: number;
-}
-
-export interface BorderRadius {
-  sm: number;
-  md: number;
-  lg: number;
-  xl: number;
-  full: number;
-}
-
-export interface Elevation {
-  none: number;
-  sm: number;
-  md: number;
-  lg: number;
-  xl: number;
-}
-
-// =============================================================================
-// API & Network Types
-// =============================================================================
-
-export interface ApiResponse<T> {
-  data: T;
+// API Response Types
+export interface APIResponse<T = any> {
   success: boolean;
-  message?: string;
-  error?: string;
-  pagination?: PaginationInfo;
+  data?: T;
+  error?: {
+    code: string;
+    message: string;
+    details?: any;
+  };
+  meta?: {
+    page?: number;
+    limit?: number;
+    total?: number;
+    hasMore?: boolean;
+  };
 }
 
-export interface PaginationInfo {
-  page: number;
-  limit: number;
-  total: number;
-  hasNext: boolean;
-  hasPrev: boolean;
+export interface PaginatedResponse<T> extends APIResponse<T[]> {
+  meta: {
+    page: number;
+    limit: number;
+    total: number;
+    hasMore: boolean;
+  };
 }
 
-export interface ApiError {
+// Search Types
+export interface SearchResult {
+  type: 'track' | 'playlist' | 'user' | 'album';
+  item: AudioTrack | Playlist | UserProfile;
+  relevanceScore: number;
+  matchedFields: string[];
+}
+
+export interface SearchFilters {
+  type?: ('track' | 'playlist' | 'user' | 'album')[];
+  category?: string[];
+  duration?: {
+    min?: number;
+    max?: number;
+  };
+  rating?: {
+    min?: number;
+    max?: number;
+  };
+  isPremium?: boolean;
+  isDownloaded?: boolean;
+  dateRange?: {
+    start?: Date;
+    end?: Date;
+  };
+}
+
+// Recommendation Types
+export interface Recommendation {
+  id: string;
+  type: 'track' | 'playlist' | 'category';
+  item: AudioTrack | Playlist;
+  reason: string;
+  confidence: number; // 0-1
+  context: {
+    time?: 'morning' | 'afternoon' | 'evening' | 'night';
+    mood?: string;
+    activity?: string;
+    weather?: string;
+    location?: string;
+  };
+  createdAt: Date;
+}
+
+// Error Types
+export interface AppError {
   code: string;
   message: string;
-  details?: Record<string, any>;
+  details?: any;
+  timestamp: Date;
+  userId?: string;
+  context?: Record<string, any>;
 }
 
-// =============================================================================
-// Utility Types
-// =============================================================================
-
-export type Optional<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
-export type Required<T, K extends keyof T> = T & { [P in K]-?: T[P] };
-
-// =============================================================================
-// Component Props Types
-// =============================================================================
-
-export interface ButtonProps {
-  variant?: 'filled' | 'outlined' | 'text';
-  size?: 'small' | 'medium' | 'large';
-  color?: 'primary' | 'secondary' | 'tertiary' | 'error';
-  disabled?: boolean;
-  loading?: boolean;
-  icon?: string;
-  iconPosition?: 'left' | 'right';
-  onPress?: () => void;
-  style?: any;
-  children?: React.ReactNode;
+// Feature Flag Types
+export interface FeatureFlag {
+  key: string;
+  enabled: boolean;
+  rolloutPercentage: number;
+  conditions?: {
+    userSegments?: string[];
+    platforms?: ('ios' | 'android')[];
+    appVersions?: string[];
+    countries?: string[];
+  };
+  metadata?: Record<string, any>;
 }
 
-export interface CardProps {
-  variant?: 'elevated' | 'filled' | 'outlined';
-  padding?: 'none' | 'sm' | 'md' | 'lg';
-  onPress?: () => void;
-  style?: any;
-  children?: React.ReactNode;
-}
-
-export interface HeaderProps {
+// Content Types
+export interface ContentItem {
+  id: string;
+  type: 'audiobook' | 'podcast' | 'music' | 'meditation' | 'sleep-story';
   title: string;
-  subtitle?: string;
-  showBackButton?: boolean;
-  rightIcon?: string;
-  leftIcon?: string;
-  onBackPress?: () => void;
-  onRightPress?: () => void;
-  onLeftPress?: () => void;
-  style?: any;
+  description: string;
+  creator: string;
+  category: string;
+  tags: string[];
+  duration: number;
+  rating: number;
+  ratingCount: number;
+  playCount: number;
+  favoriteCount: number;
+  downloadCount: number;
+  isPremium: boolean;
+  isExclusive: boolean;
+  releaseDate: Date;
+  lastUpdated: Date;
+  availability: {
+    regions: string[];
+    startDate?: Date;
+    endDate?: Date;
+  };
+  content: {
+    audioUrl: string;
+    previewUrl?: string;
+    transcriptUrl?: string;
+    coverImageUrl?: string;
+    backgroundImageUrl?: string;
+  };
+  metadata: {
+    language: string;
+    narrator?: string;
+    author?: string;
+    publisher?: string;
+    isbn?: string;
+    copyright?: string;
+    licenses?: string[];
+  };
 }
 
-// =============================================================================
-// State Management Types
-// =============================================================================
-
-export interface AppState {
-  user: User | null;
-  isAuthenticated: boolean;
-  theme: 'light' | 'dark' | 'auto';
-  currentContent: AudioContent | null;
-  playbackState: PlaybackState;
-  downloads: DownloadItem[];
-  alarms: Alarm[];
-  playlists: Playlist[];
-  settings: AppSettings;
-}
-
-export interface AppSettings {
-  // Audio settings
-  audioQuality: 'low' | 'medium' | 'high' | 'lossless';
-  autoPlay: boolean;
-  downloadOverWifiOnly: boolean;
-  
-  // Privacy settings
-  analyticsEnabled: boolean;
-  crashReportingEnabled: boolean;
-  
-  // Accessibility
-  fontSize: 'small' | 'medium' | 'large';
-  highContrast: boolean;
-  reduceMotion: boolean;
-  
-  // Notifications
-  notifications: NotificationSettings;
+// Notification Types
+export interface AppNotification {
+  id: string;
+  userId: string;
+  type: 'system' | 'content' | 'social' | 'promotion';
+  title: string;
+  body: string;
+  imageUrl?: string;
+  actionUrl?: string;
+  actionType?: 'deep-link' | 'web-link' | 'in-app';
+  isRead: boolean;
+  isPriority: boolean;
+  expiresAt?: Date;
+  createdAt: Date;
+  scheduledFor?: Date;
+  metadata?: Record<string, any>;
 }

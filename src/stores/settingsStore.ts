@@ -1,132 +1,106 @@
 /**
- * Advanced Settings Store with Categories
+ * Settings Store
  */
 
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export interface SettingsStore {
-  // Audio settings
-  audioQuality: 'standard' | 'high' | 'lossless';
+interface SettingsState {
+  // Audio Settings
+  audioQuality: 'low' | 'medium' | 'high';
   autoPlay: boolean;
-  crossfadeDuration: number;
-  offlineMode: boolean;
+  crossfade: boolean;
+  volumeBoost: boolean;
   
-  // Sleep settings
-  sleepTimerDefault: number;
+  // Sleep Settings
+  sleepTimer: number;
   fadeOutDuration: number;
-  bedtimeReminders: boolean;
-  doNotDisturb: boolean;
+  wakeUpGradually: boolean;
+  smartAlarmWindow: number;
   
-  // Notification settings
-  pushNotifications: boolean;
-  meditationReminders: boolean;
-  weeklyReports: boolean;
-  soundOnNotifications: boolean;
+  // Notification Settings
+  enableNotifications: boolean;
+  enablePushNotifications: boolean;
+  quietHours: {
+    enabled: boolean;
+    start: string;
+    end: string;
+  };
   
-  // Appearance settings
-  themeMode: 'light' | 'dark' | 'auto';
-  accentColor: 'forest' | 'ocean' | 'sunset' | 'lavender';
-  animations: boolean;
-  reduceMotion: boolean;
+  // Appearance Settings
+  fontSize: 'small' | 'medium' | 'large';
+  reducedMotion: boolean;
   
-  // Privacy settings
+  // Privacy Settings
   analytics: boolean;
-  crashReports: boolean;
+  crashReporting: boolean;
   personalizedAds: boolean;
-  dataSaver: boolean;
   
   // Actions
-  updateSetting: <K extends keyof SettingsStore>(key: K, value: SettingsStore[K]) => void;
+  updateSettings: (settings: Partial<SettingsState>) => void;
   resetSettings: () => void;
-  exportSettings: () => string;
-  importSettings: (settingsJson: string) => boolean;
 }
 
-const defaultSettings = {
-  // Audio
-  audioQuality: 'high' as const,
+const defaultSettings: Omit<SettingsState, 'updateSettings' | 'resetSettings'> = {
+  // Audio Settings
+  audioQuality: 'high',
   autoPlay: true,
-  crossfadeDuration: 3,
-  offlineMode: false,
+  crossfade: false,
+  volumeBoost: false,
   
-  // Sleep
-  sleepTimerDefault: 45,
-  fadeOutDuration: 30,
-  bedtimeReminders: true,
-  doNotDisturb: true,
+  // Sleep Settings
+  sleepTimer: 30,
+  fadeOutDuration: 5,
+  wakeUpGradually: true,
+  smartAlarmWindow: 30,
   
-  // Notifications
-  pushNotifications: true,
-  meditationReminders: false,
-  weeklyReports: true,
-  soundOnNotifications: false,
+  // Notification Settings
+  enableNotifications: true,
+  enablePushNotifications: true,
+  quietHours: {
+    enabled: false,
+    start: '22:00',
+    end: '07:00',
+  },
   
-  // Appearance
-  themeMode: 'auto' as const,
-  accentColor: 'forest' as const,
-  animations: true,
-  reduceMotion: false,
+  // Appearance Settings
+  fontSize: 'medium',
+  reducedMotion: false,
   
-  // Privacy
+  // Privacy Settings
   analytics: true,
-  crashReports: true,
+  crashReporting: true,
   personalizedAds: false,
-  dataSaver: false,
 };
 
-export const useSettingsStore = create<SettingsStore>()(n  persist(
+export const useSettingsStore = create<SettingsState>()()
+  persist(
     (set, get) => ({
       ...defaultSettings,
       
-      updateSetting: (key, value) => {
-        set({ [key]: value });
+      updateSettings: (updates) => {
+        set((state) => ({ ...state, ...updates }));
       },
       
       resetSettings: () => {
         set(defaultSettings);
       },
-      
-      exportSettings: () => {
-        const settings = get();
-        const exportData = {
-          ...settings,
-          exportDate: new Date().toISOString(),
-          version: '1.0.0',
-        };
-        return JSON.stringify(exportData, null, 2);
-      },
-      
-      importSettings: (settingsJson) => {
-        try {
-          const importedSettings = JSON.parse(settingsJson);
-          
-          // Validate settings structure
-          const validKeys = Object.keys(defaultSettings);
-          const filteredSettings: Partial<SettingsStore> = {};
-          
-          for (const key of validKeys) {
-            if (key in importedSettings) {
-              filteredSettings[key as keyof SettingsStore] = importedSettings[key];
-            }
-          }
-          
-          set({ ...defaultSettings, ...filteredSettings });
-          return true;
-        } catch (error) {
-          console.error('Failed to import settings:', error);
-          return false;
-        }
-      },
     }),
     {
-      name: 'settings-store',
+      name: 'settings-storage',
       storage: {
-        getItem: (name) => AsyncStorage.getItem(name),
-        setItem: (name, value) => AsyncStorage.setItem(name, value),
-        removeItem: (name) => AsyncStorage.removeItem(name),
+        getItem: async (name: string) => {
+          const value = await AsyncStorage.getItem(name);
+          return value ? JSON.parse(value) : null;
+        },
+        setItem: async (name: string, value: any) => {
+          await AsyncStorage.setItem(name, JSON.stringify(value));
+        },
+        removeItem: async (name: string) => {
+          await AsyncStorage.removeItem(name);
+        },
       },
     }
-  )
+  ),
 );
