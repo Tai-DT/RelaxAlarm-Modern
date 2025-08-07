@@ -1,73 +1,50 @@
 /**
- * Updated Material Design 3 Theme - RelaxAlarm Natural Colors
+ * Modern Material Design 3 Theme with Natural Forest Colors
+ * Optimized for wellness and relaxation apps
  */
 
 export interface AppTheme {
   colors: {
-    // Primary colors - Natural moss green
+    // Primary Colors (Forest Green)
     primary: string;
     onPrimary: string;
     primaryContainer: string;
     onPrimaryContainer: string;
     
-    // Secondary colors - Soft water blue
+    // Secondary Colors (Lavender)
     secondary: string;
     onSecondary: string;
     secondaryContainer: string;
     onSecondaryContainer: string;
     
-    // Tertiary colors - Fresh nature green
+    // Tertiary Colors (Sage)
     tertiary: string;
     onTertiary: string;
     tertiaryContainer: string;
     onTertiaryContainer: string;
     
-    // Error colors
+    // Error Colors
     error: string;
     onError: string;
     errorContainer: string;
     onErrorContainer: string;
     
-    // Background colors
+    // Surface Colors
     background: string;
     onBackground: string;
-    
-    // Surface colors
     surface: string;
     onSurface: string;
     surfaceVariant: string;
     onSurfaceVariant: string;
-    surfaceTint: string;
+    surfaceContainer: string;
     
-    // Outline colors
+    // Outline
     outline: string;
     outlineVariant: string;
     
-    // Additional surface colors
-    surfaceDim: string;
-    surfaceBright: string;
-    surfaceContainerLowest: string;
-    surfaceContainerLow: string;
-    surfaceContainer: string;
-    surfaceContainerHigh: string;
-    surfaceContainerHighest: string;
-  };
-  typography: {
-    displayLarge: any;
-    displayMedium: any;
-    displaySmall: any;
-    headlineLarge: any;
-    headlineMedium: any;
-    headlineSmall: any;
-    titleLarge: any;
-    titleMedium: any;
-    titleSmall: any;
-    labelLarge: any;
-    labelMedium: any;
-    labelSmall: any;
-    bodyLarge: any;
-    bodyMedium: any;
-    bodySmall: any;
+    // Special
+    scrim: string;
+    shadow: string;
   };
   spacing: {
     xs: number;
@@ -85,171 +62,128 @@ export interface AppTheme {
     xl: number;
     full: number;
   };
-  elevation: {
-    level0: any;
-    level1: any;
-    level2: any;
-    level3: any;
-    level4: any;
-    level5: any;
-  };
-  animation: {
-    duration: {
-      short: number;
-      medium: number;
-      long: number;
+  typography: {
+    displayLarge: {
+      fontSize: number;
+      lineHeight: number;
+      fontWeight: string;
     };
-    easing: {
-      standard: string;
-      emphasized: string;
-      decelerated: string;
-      accelerated: string;
+    displayMedium: {
+      fontSize: number;
+      lineHeight: number;
+      fontWeight: string;
+    };
+    displaySmall: {
+      fontSize: number;
+      lineHeight: number;
+      fontWeight: string;
+    };
+    headlineLarge: {
+      fontSize: number;
+      lineHeight: number;
+      fontWeight: string;
+    };
+    headlineMedium: {
+      fontSize: number;
+      lineHeight: number;
+      fontWeight: string;
+    };
+    headlineSmall: {
+      fontSize: number;
+      lineHeight: number;
+      fontWeight: string;
+    };
+    titleLarge: {
+      fontSize: number;
+      lineHeight: number;
+      fontWeight: string;
+    };
+    titleMedium: {
+      fontSize: number;
+      lineHeight: number;
+      fontWeight: string;
+    };
+    titleSmall: {
+      fontSize: number;
+      lineHeight: number;
+      fontWeight: string;
+    };
+    bodyLarge: {
+      fontSize: number;
+      lineHeight: number;
+      fontWeight: string;
+    };
+    bodyMedium: {
+      fontSize: number;
+      lineHeight: number;
+      fontWeight: string;
+    };
+    bodySmall: {
+      fontSize: number;
+      lineHeight: number;
+      fontWeight: string;
+    };
+    labelLarge: {
+      fontSize: number;
+      lineHeight: number;
+      fontWeight: string;
+    };
+    labelMedium: {
+      fontSize: number;
+      lineHeight: number;
+      fontWeight: string;
+    };
+    labelSmall: {
+      fontSize: number;
+      lineHeight: number;
+      fontWeight: string;
     };
   };
 }
 
-// Light Theme - Natural & Calming
+// Light Theme with Natural Forest Colors
 export const lightAppTheme: AppTheme = {
   colors: {
-    // Primary - Deeper moss green for better contrast
-    primary: '#2D5C42',           // Deeper moss green
-    onPrimary: '#FFFFFF',         // White text
-    primaryContainer: '#B8E6C7',  // Light moss container
-    onPrimaryContainer: '#0A2F1B', // Dark green text
+    // Primary Colors (Moss Green - Nature-inspired)
+    primary: '#2D5C42',
+    onPrimary: '#FFFFFF',
+    primaryContainer: '#A8D5BA',
+    onPrimaryContainer: '#0A1F0F',
     
-    // Secondary - Soft lavender (relaxing)
-    secondary: '#6B7EA6',         // Soft lavender blue
-    onSecondary: '#FFFFFF',       // White text
-    secondaryContainer: '#D4E1FF', // Light lavender container
-    onSecondaryContainer: '#1C2944', // Dark blue text
+    // Secondary Colors (Soft Lavender - Relaxation)
+    secondary: '#6B7EA6',
+    onSecondary: '#FFFFFF',
+    secondaryContainer: '#D4E3FF',
+    onSecondaryContainer: '#1A2C54',
     
-    // Tertiary - Warm sage
-    tertiary: '#7A8471',          // Warm sage green
-    onTertiary: '#FFFFFF',        // White text
-    tertiaryContainer: '#E8F5DD',  // Light sage container
-    onTertiaryContainer: '#2D3B27', // Dark sage text
+    // Tertiary Colors (Sage Green - Calm)
+    tertiary: '#7A8471',
+    onTertiary: '#FFFFFF',
+    tertiaryContainer: '#C5D2B8',
+    onTertiaryContainer: '#252F1E',
     
-    // Error colors
-    error: '#B3261E',
+    // Error Colors
+    error: '#BA1A1A',
     onError: '#FFFFFF',
-    errorContainer: '#F9DEDC',
-    onErrorContainer: '#410E0B',
+    errorContainer: '#FFDAD6',
+    onErrorContainer: '#410002',
     
-    // Background - Warm cream
-    background: '#FBF9F5',        // Warm cream background
-    onBackground: '#1C1B16',      // Dark brown text
+    // Surface Colors (Warm Cream Backgrounds)
+    background: '#FBF9F5',
+    onBackground: '#1C1B17',
+    surface: '#FFFBFF',
+    onSurface: '#1C1B17',
+    surfaceVariant: '#F1F0E8',
+    onSurfaceVariant: '#44433D',
+    surfaceContainer: '#F5F2ED',
     
-    // Surface - Slightly warmer white
-    surface: '#FBF9F5',           // Same as background
-    onSurface: '#1C1B16',         // Dark brown text
-    surfaceVariant: '#E0E4D6',    // Light sage variant
-    onSurfaceVariant: '#44483E',  // Medium dark text
-    surfaceTint: '#2D5C42',       // Primary color
+    // Outline
+    outline: '#757069',
+    outlineVariant: '#C6C3BC',
     
-    // Outline colors
-    outline: '#74796D',           // Medium sage
-    outlineVariant: '#C4C8BB',    // Light sage outline
-    
-    // Additional surface colors
-    surfaceDim: '#DCD9D0',
-    surfaceBright: '#FBF9F5',
-    surfaceContainerLowest: '#FFFFFF',
-    surfaceContainerLow: '#F5F2E9',
-    surfaceContainer: '#EFECDF',
-    surfaceContainerHigh: '#E9E6D9',
-    surfaceContainerHighest: '#E4E1D4',
-  },
-  typography: {
-    displayLarge: {
-      fontSize: 57,
-      fontWeight: '400',
-      lineHeight: 64,
-      letterSpacing: -0.25,
-    },
-    displayMedium: {
-      fontSize: 45,
-      fontWeight: '400',
-      lineHeight: 52,
-      letterSpacing: 0,
-    },
-    displaySmall: {
-      fontSize: 36,
-      fontWeight: '400',
-      lineHeight: 44,
-      letterSpacing: 0,
-    },
-    headlineLarge: {
-      fontSize: 32,
-      fontWeight: '400',
-      lineHeight: 40,
-      letterSpacing: 0,
-    },
-    headlineMedium: {
-      fontSize: 28,
-      fontWeight: '400',
-      lineHeight: 36,
-      letterSpacing: 0,
-    },
-    headlineSmall: {
-      fontSize: 24,
-      fontWeight: '400',
-      lineHeight: 32,
-      letterSpacing: 0,
-    },
-    titleLarge: {
-      fontSize: 22,
-      fontWeight: '400',
-      lineHeight: 28,
-      letterSpacing: 0,
-    },
-    titleMedium: {
-      fontSize: 16,
-      fontWeight: '500',
-      lineHeight: 24,
-      letterSpacing: 0.15,
-    },
-    titleSmall: {
-      fontSize: 14,
-      fontWeight: '500',
-      lineHeight: 20,
-      letterSpacing: 0.1,
-    },
-    labelLarge: {
-      fontSize: 14,
-      fontWeight: '500',
-      lineHeight: 20,
-      letterSpacing: 0.1,
-    },
-    labelMedium: {
-      fontSize: 12,
-      fontWeight: '500',
-      lineHeight: 16,
-      letterSpacing: 0.5,
-    },
-    labelSmall: {
-      fontSize: 11,
-      fontWeight: '500',
-      lineHeight: 16,
-      letterSpacing: 0.5,
-    },
-    bodyLarge: {
-      fontSize: 16,
-      fontWeight: '400',
-      lineHeight: 24,
-      letterSpacing: 0.15,
-    },
-    bodyMedium: {
-      fontSize: 14,
-      fontWeight: '400',
-      lineHeight: 20,
-      letterSpacing: 0.25,
-    },
-    bodySmall: {
-      fontSize: 12,
-      fontWeight: '400',
-      lineHeight: 16,
-      letterSpacing: 0.4,
-    },
+    // Special
+    scrim: '#000000',
+    shadow: '#000000',
   },
   spacing: {
     xs: 4,
@@ -267,162 +201,327 @@ export const lightAppTheme: AppTheme = {
     xl: 24,
     full: 9999,
   },
+  typography: {
+    displayLarge: {
+      fontSize: 57,
+      lineHeight: 64,
+      fontWeight: '400',
+    },
+    displayMedium: {
+      fontSize: 45,
+      lineHeight: 52,
+      fontWeight: '400',
+    },
+    displaySmall: {
+      fontSize: 36,
+      lineHeight: 44,
+      fontWeight: '400',
+    },
+    headlineLarge: {
+      fontSize: 32,
+      lineHeight: 40,
+      fontWeight: '400',
+    },
+    headlineMedium: {
+      fontSize: 28,
+      lineHeight: 36,
+      fontWeight: '400',
+    },
+    headlineSmall: {
+      fontSize: 24,
+      lineHeight: 32,
+      fontWeight: '400',
+    },
+    titleLarge: {
+      fontSize: 22,
+      lineHeight: 28,
+      fontWeight: '400',
+    },
+    titleMedium: {
+      fontSize: 16,
+      lineHeight: 24,
+      fontWeight: '500',
+    },
+    titleSmall: {
+      fontSize: 14,
+      lineHeight: 20,
+      fontWeight: '500',
+    },
+    bodyLarge: {
+      fontSize: 16,
+      lineHeight: 24,
+      fontWeight: '400',
+    },
+    bodyMedium: {
+      fontSize: 14,
+      lineHeight: 20,
+      fontWeight: '400',
+    },
+    bodySmall: {
+      fontSize: 12,
+      lineHeight: 16,
+      fontWeight: '400',
+    },
+    labelLarge: {
+      fontSize: 14,
+      lineHeight: 20,
+      fontWeight: '500',
+    },
+    labelMedium: {
+      fontSize: 12,
+      lineHeight: 16,
+      fontWeight: '500',
+    },
+    labelSmall: {
+      fontSize: 11,
+      lineHeight: 16,
+      fontWeight: '500',
+    },
+  },
+};
+
+// Dark Theme with Natural Forest Colors
+export const darkAppTheme: AppTheme = {
+  colors: {
+    // Primary Colors (Brighter Green for dark theme)
+    primary: '#8BC9A3',
+    onPrimary: '#0A1F0F',
+    primaryContainer: '#1E3F2A',
+    onPrimaryContainer: '#A8D5BA',
+    
+    // Secondary Colors (Soft Blue)
+    secondary: '#A5C3FF',
+    onSecondary: '#1A2C54',
+    secondaryContainer: '#334A7A',
+    onSecondaryContainer: '#D4E3FF',
+    
+    // Tertiary Colors (Light Sage)
+    tertiary: '#B5C8A8',
+    onTertiary: '#252F1E',
+    tertiaryContainer: '#3B4634',
+    onTertiaryContainer: '#C5D2B8',
+    
+    // Error Colors
+    error: '#FFB4AB',
+    onError: '#690005',
+    errorContainer: '#93000A',
+    onErrorContainer: '#FFDAD6',
+    
+    // Surface Colors (Dark Forest Backgrounds)
+    background: '#131311',
+    onBackground: '#E6E3DE',
+    surface: '#1C1B17',
+    onSurface: '#E6E3DE',
+    surfaceVariant: '#44433D',
+    onSurfaceVariant: '#C6C3BC',
+    surfaceContainer: '#211F1A',
+    
+    // Outline
+    outline: '#8F8D86',
+    outlineVariant: '#44433D',
+    
+    // Special
+    scrim: '#000000',
+    shadow: '#000000',
+  },
+  spacing: {
+    xs: 4,
+    sm: 8,
+    md: 16,
+    lg: 24,
+    xl: 32,
+    xxl: 48,
+  },
+  borderRadius: {
+    xs: 4,
+    sm: 8,
+    md: 12,
+    lg: 16,
+    xl: 24,
+    full: 9999,
+  },
+  typography: {
+    displayLarge: {
+      fontSize: 57,
+      lineHeight: 64,
+      fontWeight: '400',
+    },
+    displayMedium: {
+      fontSize: 45,
+      lineHeight: 52,
+      fontWeight: '400',
+    },
+    displaySmall: {
+      fontSize: 36,
+      lineHeight: 44,
+      fontWeight: '400',
+    },
+    headlineLarge: {
+      fontSize: 32,
+      lineHeight: 40,
+      fontWeight: '400',
+    },
+    headlineMedium: {
+      fontSize: 28,
+      lineHeight: 36,
+      fontWeight: '400',
+    },
+    headlineSmall: {
+      fontSize: 24,
+      lineHeight: 32,
+      fontWeight: '400',
+    },
+    titleLarge: {
+      fontSize: 22,
+      lineHeight: 28,
+      fontWeight: '400',
+    },
+    titleMedium: {
+      fontSize: 16,
+      lineHeight: 24,
+      fontWeight: '500',
+    },
+    titleSmall: {
+      fontSize: 14,
+      lineHeight: 20,
+      fontWeight: '500',
+    },
+    bodyLarge: {
+      fontSize: 16,
+      lineHeight: 24,
+      fontWeight: '400',
+    },
+    bodyMedium: {
+      fontSize: 14,
+      lineHeight: 20,
+      fontWeight: '400',
+    },
+    bodySmall: {
+      fontSize: 12,
+      lineHeight: 16,
+      fontWeight: '400',
+    },
+    labelLarge: {
+      fontSize: 14,
+      lineHeight: 20,
+      fontWeight: '500',
+    },
+    labelMedium: {
+      fontSize: 12,
+      lineHeight: 16,
+      fontWeight: '500',
+    },
+    labelSmall: {
+      fontSize: 11,
+      lineHeight: 16,
+      fontWeight: '500',
+    },
+  },
+};
+
+// Common Theme Values
+export const commonTheme = {
+  // Animation Durations
+  animation: {
+    fast: 150,
+    normal: 300,
+    slow: 500,
+  },
+  
+  // Elevation Shadows
   elevation: {
     level0: {
-      shadowColor: '#000000',
+      shadowColor: '#000',
       shadowOffset: { width: 0, height: 0 },
       shadowOpacity: 0,
       shadowRadius: 0,
       elevation: 0,
     },
     level1: {
-      shadowColor: '#000000',
+      shadowColor: '#000',
       shadowOffset: { width: 0, height: 1 },
       shadowOpacity: 0.05,
       shadowRadius: 2,
       elevation: 1,
     },
     level2: {
-      shadowColor: '#000000',
+      shadowColor: '#000',
       shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.08,
+      shadowOpacity: 0.1,
       shadowRadius: 4,
       elevation: 2,
     },
     level3: {
-      shadowColor: '#000000',
+      shadowColor: '#000',
       shadowOffset: { width: 0, height: 4 },
-      shadowOpacity: 0.12,
-      shadowRadius: 8,
-      elevation: 3,
-    },
-    level4: {
-      shadowColor: '#000000',
-      shadowOffset: { width: 0, height: 6 },
-      shadowOpacity: 0.16,
-      shadowRadius: 12,
-      elevation: 4,
-    },
-    level5: {
-      shadowColor: '#000000',
-      shadowOffset: { width: 0, height: 8 },
-      shadowOpacity: 0.20,
-      shadowRadius: 16,
-      elevation: 5,
-    },
-  },
-  animation: {
-    duration: {
-      short: 150,
-      medium: 300,
-      long: 500,
-    },
-    easing: {
-      standard: 'cubic-bezier(0.2, 0, 0, 1)',
-      emphasized: 'cubic-bezier(0.2, 0, 0, 1)',
-      decelerated: 'cubic-bezier(0, 0, 0.2, 1)',
-      accelerated: 'cubic-bezier(0.4, 0, 1, 1)',
-    },
-  },
-};
-
-// Dark Theme - Sophisticated night mode
-export const darkAppTheme: AppTheme = {
-  colors: {
-    // Primary - Bright moss green for dark theme
-    primary: '#9DD4B8',           // Light moss green
-    onPrimary: '#0A2F1B',         // Dark green text
-    primaryContainer: '#1B4A2E',  // Medium moss container
-    onPrimaryContainer: '#B8E6C7', // Light moss text
-    
-    // Secondary - Soft lavender
-    secondary: '#A6C8FF',         // Light lavender
-    onSecondary: '#1C2944',       // Dark blue text
-    secondaryContainer: '#34405B', // Medium blue container
-    onSecondaryContainer: '#D4E1FF', // Light lavender text
-    
-    // Tertiary - Light sage
-    tertiary: '#C0CCAB',          // Light sage
-    onTertiary: '#2D3B27',        // Dark sage text
-    tertiaryContainer: '#43503C',  // Medium sage container
-    onTertiaryContainer: '#E8F5DD', // Light sage text
-    
-    // Error colors
-    error: '#F2B8B5',
-    onError: '#601410',
-    errorContainer: '#8C1D18',
-    onErrorContainer: '#F9DEDC',
-    
-    // Background - Deep warm dark
-    background: '#141210',        // Very dark brown
-    onBackground: '#E6E3DB',      // Light cream text
-    
-    // Surface colors
-    surface: '#141210',           // Same as background
-    onSurface: '#E6E3DB',         // Light cream text
-    surfaceVariant: '#44483E',    // Dark sage variant
-    onSurfaceVariant: '#C4C8BB',  // Light sage text
-    surfaceTint: '#9DD4B8',       // Primary color
-    
-    // Outline colors
-    outline: '#8E9286',           // Medium sage
-    outlineVariant: '#44483E',    // Dark sage outline
-    
-    // Additional surface colors
-    surfaceDim: '#141210',
-    surfaceBright: '#3A382F',
-    surfaceContainerLowest: '#0F0E0C',
-    surfaceContainerLow: '#1C1B16',
-    surfaceContainer: '#20201A',
-    surfaceContainerHigh: '#2B2A24',
-    surfaceContainerHighest: '#36342E',
-  },
-  typography: lightAppTheme.typography,
-  spacing: lightAppTheme.spacing,
-  borderRadius: lightAppTheme.borderRadius,
-  elevation: {
-    level0: {
-      shadowColor: '#000000',
-      shadowOffset: { width: 0, height: 0 },
-      shadowOpacity: 0,
-      shadowRadius: 0,
-      elevation: 0,
-    },
-    level1: {
-      shadowColor: '#000000',
-      shadowOffset: { width: 0, height: 1 },
       shadowOpacity: 0.15,
-      shadowRadius: 2,
-      elevation: 1,
-    },
-    level2: {
-      shadowColor: '#000000',
-      shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.20,
-      shadowRadius: 4,
-      elevation: 2,
-    },
-    level3: {
-      shadowColor: '#000000',
-      shadowOffset: { width: 0, height: 4 },
-      shadowOpacity: 0.25,
       shadowRadius: 8,
-      elevation: 3,
-    },
-    level4: {
-      shadowColor: '#000000',
-      shadowOffset: { width: 0, height: 6 },
-      shadowOpacity: 0.30,
-      shadowRadius: 12,
       elevation: 4,
     },
-    level5: {
-      shadowColor: '#000000',
+    level4: {
+      shadowColor: '#000',
       shadowOffset: { width: 0, height: 8 },
-      shadowOpacity: 0.35,
+      shadowOpacity: 0.2,
       shadowRadius: 16,
-      elevation: 5,
+      elevation: 8,
+    },
+    level5: {
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 12 },
+      shadowOpacity: 0.25,
+      shadowRadius: 24,
+      elevation: 12,
     },
   },
-  animation: lightAppTheme.animation,
+  
+  // Nature-themed Icons
+  icons: {
+    nature: {
+      leaf: 'leaf',
+      tree: 'tree',
+      flower: 'flower',
+      sun: 'sunny',
+      moon: 'moon',
+      stars: 'star',
+      water: 'water',
+      fire: 'flame',
+      wind: 'cloudy',
+      earth: 'earth',
+    },
+    wellness: {
+      meditation: 'flower',
+      sleep: 'bed',
+      relaxation: 'heart',
+      breathing: 'wind',
+      mindfulness: 'leaf',
+    },
+  },
+  
+  // Natural Color Palette Extensions
+  naturalColors: {
+    forest: {
+      dark: '#1B3B2D',
+      medium: '#2D5C42', 
+      light: '#4A7C59',
+      pale: '#A8D5BA',
+    },
+    ocean: {
+      dark: '#1A4D66',
+      medium: '#2E7D93',
+      light: '#5BA4C7',
+      pale: '#B8E6FF',
+    },
+    earth: {
+      dark: '#5D4037',
+      medium: '#8D6E63',
+      light: '#A1887F',
+      pale: '#D7CCC8',
+    },
+    sky: {
+      dark: '#1565C0',
+      medium: '#42A5F5',
+      light: '#81C784',
+      pale: '#E3F2FD',
+    },
+  },
 };
